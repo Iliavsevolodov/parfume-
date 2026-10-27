@@ -2,6 +2,7 @@
 const $=id=>document.getElementById(id);
 const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const V=(r,k)=>r?.[k]??'';
+const I=(name,cls='')=>'<svg class="icon '+E(cls)+'" aria-hidden="true"><use href="./assets/icons.svg#'+E(name)+'"></use></svg>';
 const repoDate='07.10.2026';
 const state={aromas:[],course:null,lesson:null,group:'all',query:'',collection:'',gender:'',limit:24,answers:{},passed:new Set(),view:'academy'};
 try{state.passed=new Set(JSON.parse(localStorage.getItem('scentguide-progress-v2')||'[]'));}catch(e){}
@@ -33,7 +34,7 @@ function renderAcademy(){
  const groups=['all',...new Set(state.course.lessons.map(l=>l.group))];
  $('course-filters').innerHTML=groups.map(g=>'<button class="pill '+(state.group===g?'active':'')+'" type="button" data-filter="'+E(g)+'">'+(g==='all'?'Все уроки':E(g.split(' / ').slice(1).join(' / ')))+'</button>').join('');
  const list=state.course.lessons.map((lesson,i)=>({lesson,i})).filter(({lesson})=>state.group==='all'||lesson.group===state.group);
- $('course-list').innerHTML=list.map(({lesson:l,i})=>'<button class="course-card" data-lesson="'+i+'" type="button"><div class="cc-top"><span>'+E(l.group)+'</span><span class="done-mark">'+(state.passed.has(l.id)?'✓ Пройдено':E(l.reading+' мин · теория'))+'</span></div><h3>'+E(l.title)+'</h3><p>'+E(l.lead)+'</p><div class="cc-bottom"><span>УРОК '+String(i+1).padStart(2,'0')+' / '+state.course.lessons.length+'</span><span class="cc-arrow">↗</span></div></button>').join('')||'<div class="empty">Уроки не найдены</div>';
+ $('course-list').innerHTML=list.map(({lesson:l,i})=>'<button class="course-card" data-lesson="'+i+'" type="button"><div class="cc-top"><span>'+E(l.group)+'</span><span class="done-mark">'+(state.passed.has(l.id)?I('circle-check')+' Пройдено':I('clock')+' '+E(l.reading+' мин'))+'</span></div><h3>'+E(l.title)+'</h3><p>'+E(l.lead)+'</p><div class="cc-bottom"><span>УРОК '+String(i+1).padStart(2,'0')+' / '+state.course.lessons.length+'</span><span class="cc-arrow">↗</span></div></button>').join('')||'<div class="empty">Уроки не найдены</div>';
 }
 function showAcademyHome(){
  state.lesson=null;$('academy-home').hidden=false;$('lesson-view').hidden=true;$('exam-view').hidden=true;
@@ -51,7 +52,7 @@ function renderLesson(){
  if(state.lesson===null)return;
  const l=state.course.lessons[state.lesson], idx=state.lesson;
  $('lesson-group').textContent=l.group;
- $('lesson-outline').innerHTML=state.course.lessons.map((x,i)=>'<button type="button" data-lesson="'+i+'" class="outline-item '+(idx===i?'active ':'')+(state.passed.has(x.id)?'done':'')+'"><span>'+(state.passed.has(x.id)?'✓':String(i+1).padStart(2,'0'))+'</span>'+E(x.title)+'</button>').join('');
+ $('lesson-outline').innerHTML=state.course.lessons.map((x,i)=>'<button type="button" data-lesson="'+i+'" class="outline-item '+(idx===i?'active ':'')+(state.passed.has(x.id)?'done':'')+'"><span>'+(state.passed.has(x.id)?I('check'):String(i+1).padStart(2,'0'))+'</span>'+E(x.title)+'</button>').join('');
  const parts=l.parts.map((p,i)=>'<section class="lesson-part"><h2>'+String(i+1).padStart(2,'0')+'. '+E(p.heading)+'</h2><p>'+E(p.text)+'</p></section>').join('');
  const a=state.answers[l.id], complete=state.passed.has(l.id);
  const options=l.quiz.answers.map((option,i)=>{
@@ -60,10 +61,10 @@ function renderLesson(){
  }).join('');
  $('lesson-article').innerHTML='<div class="lesson-overline"><span>'+E(l.group)+'</span><span>·</span><span>УРОК '+String(idx+1).padStart(2,'0')+'</span></div>'
  +'<h1>'+E(l.title)+'</h1><p class="lesson-lead">'+E(l.lead)+'</p>'
- +'<div class="lesson-metadata"><span>◷ '+E(l.reading)+' минут</span><span>АВТОРСКИЙ УРОК</span><span>'+(complete?'✓ ПРОЙДЕНО':'НЕ ПРОЙДЕНО')+'</span></div>'
+ +'<div class="lesson-metadata"><span>'+I('clock')+' '+E(l.reading)+' минут</span><span>'+I('book-open')+' АВТОРСКИЙ УРОК</span><span>'+(complete?I('circle-check')+' ПРОЙДЕНО':I('bookmark')+' В ПРОЦЕССЕ')+'</span></div>'
  +parts
  +'<section class="lesson-practice"><span>ЗАКРЕПЛЯЕМ НА ПРАКТИКЕ</span><h3>Ваша практика</h3><p>'+E(l.practice)+'</p></section>'
- +'<section class="lesson-summary"><span class="overline">ГЛАВНЫЕ МЫСЛИ</span><div class="summary-items">'+l.parts.map(p=>'<div>'+E(p.heading)+'</div>').join('')+'</div></section>'
+ +'<section class="lesson-summary"><span class="overline">ГЛАВНЫЕ МЫСЛИ</span><div class="summary-items">'+l.parts.map(p=>'<div>'+I('circle-check')+' '+E(p.heading)+'</div>').join('')+'</div></section>'
  +'<section class="lesson-test" id="lesson-test"><span class="overline">ПРОВЕРЬТЕ СЕБЯ</span><h3>'+E(l.quiz.question)+'</h3>'+options+(a!==undefined?'<div class="test-feedback '+(a===l.quiz.correct?'correct':'incorrect')+'"><b>'+(a===l.quiz.correct?'Верно! Урок отмечен как пройденный.':'Пока не совсем. Можно выбрать другой ответ.')+'</b><div>'+E(l.quiz.explanation)+'</div></div>':'')+'</section>'
  +'<div class="lesson-bottom"><button class="btn btn-outline" data-lesson="'+Math.max(0,idx-1)+'" '+(idx===0?'disabled':'')+'>← Предыдущий урок</button><button class="btn btn-dark" data-lesson="'+Math.min(state.course.lessons.length-1,idx+1)+'" '+(idx===state.course.lessons.length-1?'disabled':'')+'>Следующий урок ↗</button></div>';
 }
@@ -117,7 +118,7 @@ function closeModal(){$('aroma-modal').classList.remove('open');$('aroma-modal')
 async function copyAroma(idx){
  const r=state.aromas[idx];if(!r)return;
  const t=[V(r,'Код аромата'),V(r,'Характер'),'Верхние ноты: '+V(r,'Верхние ноты'),'Средние: '+V(r,'Средние ноты'),'База: '+V(r,'Базовые ноты'),'Артикул: '+V(r,'Артикул флакона'),'Наличие и цены уточняйте перед заказом.'].join('\n');
- try{await navigator.clipboard.writeText(t);const btn=document.querySelector('[data-copy]');if(btn)btn.textContent='Скопировано ✓';}
+ try{await navigator.clipboard.writeText(t);const btn=document.querySelector('[data-copy]');if(btn)btn.innerHTML=I('circle-check')+' Скопировано';}
  catch(e){alert('Не удалось скопировать. Откройте карточку в защищённом браузере.');}
 }
 const matchTokens={
@@ -156,7 +157,7 @@ function openExam(){
  state.lesson=null;$('academy-home').hidden=true;$('lesson-view').hidden=true;$('exam-view').hidden=false;
  $('exam-result').innerHTML='';
  const qs=examIds.map(i=>state.course.lessons[i]);
- $('exam-form').innerHTML=qs.map((lesson,i)=>'<fieldset class="exam-question"><legend><span>'+String(i+1).padStart(2,'0')+' / 18</span>'+E(lesson.quiz.question)+'</legend>'+lesson.quiz.answers.map((answer,j)=>'<label class="exam-option"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+E(answer)+'</span></label>').join('')+'</fieldset>').join('')+'<button class="btn btn-dark exam-submit" type="submit">Проверить знания ↗</button>';
+ $('exam-form').innerHTML=qs.map((lesson,i)=>'<fieldset class="exam-question"><legend><span>'+String(i+1).padStart(2,'0')+' / 18</span>'+E(lesson.quiz.question)+'</legend>'+lesson.quiz.answers.map((answer,j)=>'<label class="exam-option"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+E(answer)+'</span></label>').join('')+'</fieldset>').join('')+'<button class="btn btn-dark exam-submit" type="submit">Проверить знания '+I('arrow-up-right')+'</button>';
  goTop();
 }
 function submitExam(e){
@@ -178,7 +179,7 @@ function submitExam(e){
  const pct=Math.round(correct/examIds.length*100),passed=pct>=80;
  $('exam-result').innerHTML='<div class="exam-score"><span class="overline">РЕЗУЛЬТАТ ЭКЗАМЕНА</span><h2>'+correct+' / '+examIds.length+'</h2><p>'+(passed?'Отлично! Вы уверенно ориентируетесь в основных темах курса.':'Есть темы, которые стоит повторить. После разбора ошибок можно пройти экзамен снова.')+'</p><strong>'+pct+'% · '+(passed?'УРОВЕНЬ ОСВОЕН':'ПОВТОРИТЕ МАТЕРИАЛ')+'</strong></div>'
  +(mistakes.length?'<div class="exam-errors"><h3>Что повторить</h3>'+mistakes.map(m=>'<div><b>Вопрос '+m.num+': '+E(m.lesson.quiz.question)+'</b><p>Правильный ответ: '+E(m.lesson.quiz.answers[m.lesson.quiz.correct])+'. '+E(m.lesson.quiz.explanation)+'</p></div>').join('')+'</div>':'')
- +'<button class="btn btn-outline" id="retakeExam" type="button">Пройти ещё раз ↻</button>';
+ +'<button class="btn btn-outline" id="retakeExam" type="button">'+I('refresh-cw')+' Пройти ещё раз</button>';
  $('exam-form').querySelectorAll('input').forEach(input=>input.disabled=true);
  $('exam-form').querySelector('button[type=submit]').disabled=true;
  $('exam-result').scrollIntoView({behavior:'smooth',block:'start'});
