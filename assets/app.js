@@ -208,7 +208,10 @@ async function boot(){
   $('mobileMenu').setAttribute('aria-expanded',String(open));
  });
  $('startLearning').addEventListener('click',()=>{if(!state.course)return;const next=state.course.lessons.findIndex(l=>!state.passed.has(l.id));openLesson(next<0?0:next)});
- $('backAcademy').addEventListener('click',()=>{showAcademyHome();goTop()});\n $('startExam').addEventListener('click',openExam);\n $('backFromExam').addEventListener('click',()=>{showAcademyHome();goTop()});\n $('exam-form').addEventListener('submit',submitExam);
+ $('backAcademy').addEventListener('click',()=>{showAcademyHome();goTop()});
+ $('startExam').addEventListener('click',openExam);
+ $('backFromExam').addEventListener('click',()=>{showAcademyHome();goTop()});
+ $('exam-form').addEventListener('submit',submitExam);
  $('catalog-query').addEventListener('input',e=>{state.query=e.target.value;state.limit=24;renderCatalog()});
  $('catalog-collection').addEventListener('change',e=>{state.collection=e.target.value;state.limit=24;renderCatalog()});
  $('catalog-gender').addEventListener('change',e=>{state.gender=e.target.value;state.limit=24;renderCatalog()});
