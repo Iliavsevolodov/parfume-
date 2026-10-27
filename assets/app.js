@@ -32,7 +32,7 @@ function renderAcademy(){
  if(!state.course)return;
  progress();
  const groups=['all',...new Set(state.course.lessons.map(l=>l.group))];
- $('course-filters').innerHTML=groups.map(g=>'<button class="pill '+(state.group===g?'active':'')+'" type="button" data-filter="'+E(g)+'">'+(g==='all'?'Все уроки':E(g.replace(/^\\d+ \\/ /,'')))+'</button>').join('');
+ $('course-filters').innerHTML=groups.map(g=>'<button class="pill '+(state.group===g?'active':'')+'" type="button" data-filter="'+E(g)+'">'+(g==='all'?'Все уроки':E(g.split(' / ').slice(1).join(' / ')))+'</button>').join('');
  const list=state.course.lessons.map((lesson,i)=>({lesson,i})).filter(({lesson})=>state.group==='all'||lesson.group===state.group);
  $('course-list').innerHTML=list.map(({lesson:l,i})=>'<button class="course-card" data-lesson="'+i+'" type="button"><div class="cc-top"><span>'+E(l.group)+'</span><span class="done-mark">'+(state.passed.has(l.id)?'✓ Пройдено':E(l.reading+' мин · теория'))+'</span></div><h3>'+E(l.title)+'</h3><p>'+E(l.lead)+'</p><div class="cc-bottom"><span>УРОК '+String(i+1).padStart(2,'0')+' / '+state.course.lessons.length+'</span><span class="cc-arrow">↗</span></div></button>').join('')||'<div class="empty">Уроки не найдены</div>';
 }
@@ -173,7 +173,7 @@ async function boot(){
   const menu=document.querySelector('.main-nav'),open=menu.classList.toggle('open');
   $('mobileMenu').setAttribute('aria-expanded',String(open));
  });
- $('startLearning').addEventListener('click',()=>openLesson(state.course?.lessons.findIndex(l=>!state.passed.has(l.id))<0?0:state.course.lessons.findIndex(l=>!state.passed.has(l.id))));
+ $('startLearning').addEventListener('click',()=>{if(!state.course)return;const next=state.course.lessons.findIndex(l=>!state.passed.has(l.id));openLesson(next<0?0:next)});
  $('backAcademy').addEventListener('click',()=>{showAcademyHome();goTop()});
  $('catalog-query').addEventListener('input',e=>{state.query=e.target.value;state.limit=24;renderCatalog()});
  $('catalog-collection').addEventListener('change',e=>{state.collection=e.target.value;state.limit=24;renderCatalog()});
