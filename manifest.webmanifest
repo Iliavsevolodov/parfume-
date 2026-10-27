@@ -1,0 +1,19 @@
+{
+  "name": "SCENT GUIDE — Парфюмерия Greenway",
+  "short_name": "SCENT GUIDE",
+  "description": "Неофициальный командный парфюмерный справочник и учебная платформа",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f6f2",
+  "theme_color": "#f7f6f2",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
