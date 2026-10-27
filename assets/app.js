@@ -37,7 +37,7 @@ function renderAcademy(){
  $('course-list').innerHTML=list.map(({lesson:l,i})=>'<button class="course-card" data-lesson="'+i+'" type="button"><div class="cc-top"><span>'+E(l.group)+'</span><span class="done-mark">'+(state.passed.has(l.id)?'✓ Пройдено':E(l.reading+' мин · теория'))+'</span></div><h3>'+E(l.title)+'</h3><p>'+E(l.lead)+'</p><div class="cc-bottom"><span>УРОК '+String(i+1).padStart(2,'0')+' / '+state.course.lessons.length+'</span><span class="cc-arrow">↗</span></div></button>').join('')||'<div class="empty">Уроки не найдены</div>';
 }
 function showAcademyHome(){
- state.lesson=null;$('academy-home').hidden=false;$('lesson-view').hidden=true;
+ state.lesson=null;$('academy-home').hidden=false;$('lesson-view').hidden=true;$('exam-view').hidden=true;
  renderAcademy();
 }
 function openLesson(idx){
@@ -45,7 +45,7 @@ function openLesson(idx){
  state.lesson=idx;state.view='academy';
  document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-academy'));
  document.querySelectorAll('.nav-link').forEach(el=>el.classList.toggle('active',el.dataset.view==='academy'));
- $('academy-home').hidden=true;$('lesson-view').hidden=false;
+ $('academy-home').hidden=true;$('lesson-view').hidden=false;$('exam-view').hidden=true;
  renderLesson();goTop();
 }
 function renderLesson(){
@@ -156,6 +156,40 @@ function recommend(event){
  +candidates.map((x,i)=>'<button type="button" class="match-result" data-aroma="'+x.i+'"><span>'+String(i+1).padStart(2,'0')+'</span><div><h3>'+E(V(x.r,'Код аромата'))+'</h3><p>'+E(V(x.r,'Характер'))+'. Совпадения: '+E([...new Set(x.found)].slice(0,4).join(', '))+'.</p></div><i>↗</i></button>').join('')
  +'<p class="meta-note" style="font-size:11px;color:#948276;margin-top:20px">Попробуйте 2–3 варианта на блоттерах перед выбором. Это не гарантия того, что аромат понравится.</p>';
 }
+const examIds=[0,1,2,3,4,5,6,8,9,10,11,12,13,14,15,17,21,25];
+function openExam(){
+ if(!state.course)return;
+ state.lesson=null;$('academy-home').hidden=true;$('lesson-view').hidden=true;$('exam-view').hidden=false;
+ $('exam-result').innerHTML='';
+ const qs=examIds.map(i=>state.course.lessons[i]);
+ $('exam-form').innerHTML=qs.map((lesson,i)=>'<fieldset class="exam-question"><legend><span>'+String(i+1).padStart(2,'0')+' / 18</span>'+E(lesson.quiz.question)+'</legend>'+lesson.quiz.answers.map((answer,j)=>'<label class="exam-option"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+E(answer)+'</span></label>').join('')+'</fieldset>').join('')+'<button class="btn btn-dark exam-submit" type="submit">Проверить знания ↗</button>';
+ goTop();
+}
+function submitExam(e){
+ e.preventDefault();
+ if(!state.course)return;
+ const form=new FormData(e.target);
+ const missing=examIds.map((v,i)=>i).filter(i=>form.get('q'+i)===null);
+ if(missing.length){
+   $('exam-result').innerHTML='<div class="exam-score exam-warning"><h2>Осталось ответить на '+missing.length+' вопросов</h2><p>Ответьте на все вопросы, чтобы завершить экзамен.</p></div>';
+   return;
+ }
+ let correct=0;
+ const mistakes=[];
+ examIds.forEach((id,i)=>{
+   const lesson=state.course.lessons[id],ans=Number(form.get('q'+i));
+   if(ans===lesson.quiz.correct)correct++;
+   else mistakes.push({lesson,ans,num:i+1});
+ });
+ const pct=Math.round(correct/examIds.length*100),passed=pct>=80;
+ $('exam-result').innerHTML='<div class="exam-score"><span class="overline">РЕЗУЛЬТАТ ЭКЗАМЕНА</span><h2>'+correct+' / '+examIds.length+'</h2><p>'+(passed?'Отлично! Вы уверенно ориентируетесь в основных темах курса.':'Есть темы, которые стоит повторить. После разбора ошибок можно пройти экзамен снова.')+'</p><strong>'+pct+'% · '+(passed?'УРОВЕНЬ ОСВОЕН':'ПОВТОРИТЕ МАТЕРИАЛ')+'</strong></div>'
+ +(mistakes.length?'<div class="exam-errors"><h3>Что повторить</h3>'+mistakes.map(m=>'<div><b>Вопрос '+m.num+': '+E(m.lesson.quiz.question)+'</b><p>Правильный ответ: '+E(m.lesson.quiz.answers[m.lesson.quiz.correct])+'. '+E(m.lesson.quiz.explanation)+'</p></div>').join('')+'</div>':'')
+ +'<button class="btn btn-outline" id="retakeExam" type="button">Пройти ещё раз ↻</button>';
+ $('exam-form').querySelectorAll('input').forEach(input=>input.disabled=true);
+ $('exam-form').querySelector('button[type=submit]').disabled=true;
+ $('exam-result').scrollIntoView({behavior:'smooth',block:'start'});
+ $('retakeExam').addEventListener('click',openExam);
+}
 function clickHandler(e){
  const target=e.target.closest('button,[data-close-modal]');if(!target)return;
  if(target.hasAttribute('data-close-modal')){closeModal();return;}
@@ -174,7 +208,7 @@ async function boot(){
   $('mobileMenu').setAttribute('aria-expanded',String(open));
  });
  $('startLearning').addEventListener('click',()=>{if(!state.course)return;const next=state.course.lessons.findIndex(l=>!state.passed.has(l.id));openLesson(next<0?0:next)});
- $('backAcademy').addEventListener('click',()=>{showAcademyHome();goTop()});
+ $('backAcademy').addEventListener('click',()=>{showAcademyHome();goTop()});\n $('startExam').addEventListener('click',openExam);\n $('backFromExam').addEventListener('click',()=>{showAcademyHome();goTop()});\n $('exam-form').addEventListener('submit',submitExam);
  $('catalog-query').addEventListener('input',e=>{state.query=e.target.value;state.limit=24;renderCatalog()});
  $('catalog-collection').addEventListener('change',e=>{state.collection=e.target.value;state.limit=24;renderCatalog()});
  $('catalog-gender').addEventListener('change',e=>{state.gender=e.target.value;state.limit=24;renderCatalog()});
