@@ -1,12 +1,98 @@
-<!DOCTYPE html>
-<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#f7f6f2"><title>SCENT GUIDE — Каталог, подбор и обучение</title><meta name="description" content="Неофициальный командный сервис Greenway: подбор ароматов Enjoy Care, каталог 83 позиций и обучение партнёров."><link rel="icon" type="image/svg+xml" href="./assets/icon.svg"><link rel="manifest" href="./manifest.webmanifest">
-<link rel="stylesheet" href="./assets/styles.css"></head><body>
-<header><div class="shell"><div class="head"><div class="logo">SCENT<span style="background:#f2e52a;padding:1px 4px">GUIDE</span> / GREENWAY</div><div class="headnote">Командный сервис • прототип 01<br>Данные из каталога 07.10.2026</div></div><nav class="nav"><button data-tab="pick" class="active">01 / ПОДОБРАТЬ</button><button data-tab="catalog">02 / КАТАЛОГ</button><button data-tab="academy">03 / АКАДЕМИЯ</button><button data-tab="sources">04 / ИСТОЧНИКИ</button></nav></div></header>
-<main class="shell"><div class="hero"><div><div class="kicker">АРОМАТЫ • АНАЛИТИКА • ОБУЧЕНИЕ</div><h1>ТВОЙ<br><span class="accent">АРОМАТ.</span><br>ТВОЙ ВЫБОР.</h1><p class="intro">Подбор ароматов Enjoy Care по парфюмерным нотам, подробный справочник и короткие уроки для партнёров Greenway — в одном месте.</p></div><div class="headnote">PREMIUM EDITORIAL<br>TEAM EDUCATION</div></div>
-<div class="stats"><div class="stat"><b>83</b><span>позиции в исследовательской базе</span></div><div class="stat"><b>72</b><span>полные карточки из каталога РФ</span></div><div class="stat"><b>11</b><span>дополнительных ароматов из новостей</span></div><div class="stat"><b>06</b><span>мини-модулей обучения</span></div></div>
-<section id="pick" class="section active"><div class="kicker">ПЕРСОНАЛЬНЫЙ КОНСУЛЬТАНТ</div><h2>Подбор по предпочтениям</h2><p class="intro">Ответьте на несколько вопросов. Сервис предложит наиболее подходящие по описанию и нотам композиции. Это предварительный фильтр, а не замена пробника.</p>
-<div class="quiz"><div class="panel"><form id="pick-form"><div class="field"><label for="p-sex">Для кого подбираем?</label><select id="p-sex"><option value="any">Для себя / без ограничений</option><option value="Женский">Женская коллекция + унисекс</option><option value="Мужской">Мужская коллекция + унисекс</option><option value="Унисекс">Только унисекс</option></select></div><div class="field"><label for="p-family">Какие ароматы нравятся?</label><select id="p-family"><option value="fresh">Свежие, цитрусовые, морские</option><option value="flower">Цветочные и нежные</option><option value="sweet">Сладкие и гурманские</option><option value="wood">Древесные, кожаные</option><option value="spice">Пряные и восточные</option><option value="fruit">Фруктовые и ягодные</option><option value="powder">Пудровые и мускусные</option></select></div><div class="field"><label for="p-occasion">Куда планируете носить?</label><select id="p-occasion"><option value="everyday">На каждый день</option><option value="evening">Для вечера / особого случая</option><option value="any">Без предпочтения</option></select></div><div class="field"><label for="p-collection">Предпочтительная линейка</label><select id="p-collection"><option value="any">Любая</option><option value="Day-to-Day">Day-to-Day • 30 мл</option><option value="Classic">Classic • 50 мл</option><option value="Luxe">Luxe • 50 мл</option></select></div><button class="yellowbutton" type="submit">ПОДОБРАТЬ АРОМАТЫ ↗</button></form></div><div id="recommendations" class="recoutput"><div class="kicker">РЕЗУЛЬТАТ</div><h3>Начнём с ваших предпочтений</h3><p style="color:#c5c4bc">После выбора покажем 5 вариантов с объяснением, какие ноты и характеристики повлияли на подбор.</p></div></div><div class="callout"><b>Как правильно завершить подбор:</b> предложите клиенту протестировать 2–3 аромата на блоттере, затем понравившийся — на коже с разрешения клиента. Окончательный выбор всегда за человеком.</div></section>
-<section id="catalog" class="section"><div class="kicker">ПРОДУКТОВАЯ БАЗА</div><h2>Каталог ароматов</h2><p class="intro">Найдите композицию по номеру, характеру, артикулу или отдельной ноте. Карточки с пометкой «Проверить» отсутствуют в каталоге РФ от 07.10.2026 и требуют уточнения.</p><div class="tools"><div class="field"><label for="search">Поиск</label><input id="search" placeholder="Например: 327, жасмин, ваниль или 029286"></div><div class="field"><label for="sex">Направление</label><select id="sex"><option value="any">Все</option><option>Женский</option><option>Мужской</option><option>Унисекс</option></select></div><div class="field"><label for="collection">Линейка</label><select id="collection"><option value="any">Все</option><option>Classic</option><option>Luxe</option><option>Day-to-Day</option></select></div></div><p class="muted"><span id="shown">83</span> ароматов показано</p><div id="cards" class="cards"></div></section>
-<section id="academy" class="section"><div class="kicker">ОБУЧЕНИЕ ПАРТНЁРОВ</div><h2>Парфюмерная академия</h2><p class="intro">Шесть коротких уроков для первого уровня подготовки консультанта. Отмечайте пройденное — прогресс сохраняется в этом браузере.</p><div class="callout">Прогресс: <b id="progress">0 из 6</b> модулей пройдено. Это учебный прототип без аккаунтов и сертификатов.</div><div class="learning" id="learning"></div></section>
-<section id="sources" class="section"><div class="kicker">ПРОИСХОЖДЕНИЕ ДАННЫХ</div><h2>Источники и ограничения</h2><div class="source"><b>Основной источник</b><p>Каталог продуктов Greenway РФ от 07.10.2026, разделы Enjoy Care (стр. 112–125) и EC Day-to-Day (стр. 126–133). 72 аромата с точными нотами, артикулами пробников и флаконов, ценами и PV на дату каталога. Файл предоставлен в библиотеке проекта.</p></div><div class="source"><b>Дополнительные официальные новости</b><p><a target="_blank" rel="noopener" href="https://greenwaystart.com/news/2025-03-26/">26.03.2025 — лимитированная серия</a><br><a target="_blank" rel="noopener" href="https://greenwaystart.com/news/2025-10-30/">30.10.2025 — шесть новых ароматов</a><br><a target="_blank" rel="noopener" href="https://greenwayglobal.by/news/2026-02-17/">17.02.2026 — четыре лимитированных аромата (Беларусь)</a></p></div><div class="source"><b>Проверять перед клиентским заказом</b><p>Текущую цену, наличие в конкретной стране, актуальные PV, ограничения доставки, статус лимитированных позиций и состав набора пробников. Этот прототип не подключён к интернет-магазину и не проверяет остатки в реальном времени.</p></div><div class="source"><b>Особое замечание</b><p>В каталоге РФ набор пробников описан как 44 шт. × 2 мл, тогда как в том же каталоге перечислены 47 ароматов Classic/Luxe. Состав набора нужно сверить отдельно перед публикацией в сервисе.</p></div><div class="source"><b>Этика рекомендаций</b><p>Совпадения с ароматами других брендов и оценка стойкости каждого номера не подтверждены каталогом. Поэтому такие сведения не показаны как факты. Подбор основан на заявленных в каталоге нотах и поясняется клиенту.</p></div></section></main><div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Информация об аромате"><div class="drawer" id="drawer"></div></div><footer class="shell"><span>SCENT GUIDE • Внутренний командный прототип • неофициальный сервис</span><span>Источник цен: каталог 07.10.2026 • Наличие не проверяется</span></footer>
-<script defer src="./assets/app.js"></script></body></html>
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7f3ed">
+<meta name="description" content="Академия парфюмерии Enjoy Care: 26 уроков по эфирами экспертов, 83 карточки ароматов Greenway, подбор и практические тесты.">
+<meta property="og:title" content="SCENT GUIDE — Академия ароматов">
+<title>SCENT GUIDE — Академия ароматов Greenway</title>
+<link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+<div class="announcement"><span class="a-dot"></span> НЕЗАВИСИМЫЙ КОМАНДНЫЙ ПРОЕКТ · ПО МАТЕРИАЛАМ ЭФИРОВ ЭКСПЕРТОВ GREENWAY</div>
+<header class="site-header">
+ <div class="wrap head-inner"><button id="homeLogo" class="brand" type="button" aria-label="На главную">scent<span class="brand-dot">.</span>guide<small>PARFUM EDUCATION</small></button>
+ <nav aria-label="Основная навигация" class="main-nav">
+  <button data-view="academy" class="nav-link active">Академия</button><button data-view="catalog" class="nav-link">Каталог ароматов</button><button data-view="match" class="nav-link">Подбор</button><button data-view="sources" class="nav-link">Источники</button>
+ </nav>
+ <button class="mobile-menu" id="mobileMenu" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span></button>
+ <div class="head-right"><span class="tiny-label">ENJOY CARE / GREENWAY</span><span class="status-dot"></span></div>
+ </div>
+</header>
+<main>
+<section id="view-academy" class="view active" aria-label="Академия">
+ <div id="academy-home">
+  <div class="wrap">
+  <div class="hero">
+   <div class="hero-copy">
+    <div class="eyebrow"><span class="dash"></span> ДЛЯ ТЕХ, КТО ХОЧЕТ РАЗБИРАТЬСЯ</div>
+    <h1>Искусство<br><em>чувствовать</em> аромат.</h1>
+    <p class="hero-desc">От первых нот до уверенной консультации. Полноценная академия парфюмерии Enjoy Care по эфирам экспертов и официальному каталогу Greenway.</p>
+    <div class="hero-actions"><button class="btn btn-dark" id="startLearning">Начать обучение <span aria-hidden="true">↗</span></button><button class="text-link" data-view="catalog">Исследовать ароматы <span aria-hidden="true">↗</span></button></div>
+    <div class="hero-meta"><span>26 УРОКОВ С ТЕОРИЕЙ</span><i></i><span>6 ТЕМАТИЧЕСКИХ РАЗДЕЛОВ</span><i></i><span>БЕЗ РЕГИСТРАЦИИ</span></div>
+   </div>
+   <div class="hero-art" aria-hidden="true"><div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div><div class="hero-art-caption">THE ART<br>OF SCENT<span>01 — 26</span></div><div class="glass-shadow"></div><div class="perfume-bottle"><div class="bottle-cap"></div><div class="bottle-neck"></div><div class="bottle-body"><div class="bottle-liquid"></div><div class="bottle-label"><b>SCENT<br>GUIDE</b><span>EAU DE SAVOIR</span></div></div></div><div class="art-vertical">A JOURNEY THROUGH NOTES, STORIES & EMOTIONS</div></div>
+  </div>
+  <div class="intro-strip"><div><span class="overline">ВАША ПРОГРАММА</span><h2>Всё необходимое,<br><em>чтобы понимать парфюм.</em></h2></div><p>От теории аромата до уверенной работы с пробниками, подбора клиенту и проверки фактов. У каждого урока есть примеры, самостоятельная практика и вопрос для закрепления.</p></div>
+  <div class="course-progress"><div><span class="overline">УЧЕБНЫЙ МАРШРУТ</span><strong id="progress-text">0 из 26 уроков завершено</strong></div><div class="progress-rail"><div id="progress-bar"></div></div><span id="progress-percent">0%</span></div>
+  <div id="course-filters" class="pills" aria-label="Фильтр разделов"></div>
+  <div id="course-list" class="course-grid"><div class="loading">Загружаем программу обучения…</div></div>
+  <div class="bottom-note"><div class="little-star">✳</div><div><b>Теория, основанная на источниках</b><p>Материалы экспертов отделены от данных официального каталога. Спорные утверждения о стойкости, сходстве с брендами и ценах не представлены как подтверждённые факты.</p></div></div>
+  </div>
+ </div>
+ <div id="lesson-view" class="wrap lesson-layout" hidden>
+  <aside class="lesson-side">
+   <button class="back-link" id="backAcademy">← Все уроки</button>
+   <span class="overline" id="lesson-group">ПРОГРАММА</span>
+   <div id="lesson-outline" class="lesson-outline"></div>
+   <div class="aside-foot">Теория + практика + мини-тест.<br>Прогресс хранится только в этом браузере.</div>
+  </aside>
+  <article id="lesson-article" class="lesson-article" aria-live="polite"></article>
+ </div>
+</section>
+<section id="view-catalog" class="view" aria-label="Каталог">
+ <div class="wrap">
+  <div class="page-head"><div><div class="eyebrow"><span class="dash"></span> ПАРФЮМЕРНАЯ БИБЛИОТЕКА</div><h1>Атлас <em>ароматов.</em></h1><p>Ноты, описания и артикулы Enjoy Care в одном аккуратном справочнике. Каждая карточка связана с источником.</p></div><span class="page-number">83<span>AROMAS</span></span></div>
+  <div class="catalog-tools">
+   <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="catalog-query" type="search" placeholder="Номер, нота, название или артикул…" autocomplete="off" aria-label="Поиск по ароматам"></label>
+   <select id="catalog-collection" aria-label="Выбрать коллекцию"><option value="">Все коллекции</option><option value="Classic">Classic</option><option value="Luxe">Luxe</option><option value="Day-to-Day">Day-to-Day</option></select>
+   <select id="catalog-gender" aria-label="Выбрать категорию"><option value="">Все категории</option><option>Женский</option><option>Мужской</option><option>Унисекс</option></select>
+  </div>
+  <div class="catalog-meta"><span id="catalog-count">Загрузка каталога…</span><span>ЦЕНЫ И НАЛИЧИЕ ТРЕБУЮТ ПРОВЕРКИ</span></div>
+  <div id="catalog-grid" class="fragrance-grid"></div><div class="showmore"><button id="showMore" class="btn btn-outline" hidden>Показать ещё ароматы ↓</button></div>
+ </div>
+</section>
+<section id="view-match" class="view" aria-label="Подбор ароматов">
+ <div class="wrap">
+  <div class="page-head"><div><div class="eyebrow"><span class="dash"></span> ПЕРСОНАЛЬНЫЙ ПОДБОР</div><h1>Найдём <em>ваш аромат.</em></h1><p>Несколько простых вопросов помогут сузить выбор. Финальное решение — после личного знакомства с пробниками.</p></div></div>
+  <div class="match-shell">
+   <form id="match-form" class="match-panel">
+    <span class="overline">01 / ВАШИ ПРЕДПОЧТЕНИЯ</span>
+    <h2>Какой аромат<br>вам близок?</h2>
+    <div class="form-field"><label for="match-style">Выберите настроение</label><select id="match-style"><option value="fresh">Свежесть, цитрусы, морской воздух</option><option value="floral">Цветы, нежность, лёгкость</option><option value="sweet">Ваниль, кофе, сладкие ноты</option><option value="wood">Дерево, травы, спокойная глубина</option><option value="fruit">Фрукты и сочные ягоды</option><option value="spice">Пряности, восточные акценты</option></select></div>
+    <div class="form-field"><label for="match-who">Какая категория интересна?</label><select id="match-who"><option value="">Любая, включая унисекс</option><option>Женский</option><option>Мужской</option><option>Унисекс</option></select></div>
+    <div class="form-field"><label for="match-use">Для какого случая?</label><select id="match-use"><option value="everyday">На каждый день</option><option value="evening">Для особых случаев</option><option value="any">Без ограничений</option></select></div>
+    <div class="form-field"><label for="match-avoid">Какие ноты не нравятся? (необязательно)</label><input id="match-avoid" placeholder="Например: ваниль, роза"></div>
+    <button class="btn btn-dark match-submit" type="submit">Подобрать варианты <span>↗</span></button>
+   </form>
+   <div class="match-output" id="match-results"><div class="match-placeholder"><div class="abstract-circle">✳</div><span class="overline">02 / ВАША ПОДБОРКА</span><h2>Хороший аромат<br><em>начинается с вопроса.</em></h2><p>Заполните несколько полей слева — и здесь появятся композиции из каталога с объяснением выбора.</p></div></div>
+  </div>
+  <div class="editorial-note"><b>Важно о рекомендациях</b><p>Система оценивает совпадения по заявленным нотам и описанию характера, а не прогнозирует индивидуальное восприятие. Если нужной ноты нет в данных, мы не придумываем её.</p></div>
+ </div>
+</section>
+<section id="view-sources" class="view" aria-label="Источники">
+ <div class="wrap"><div class="page-head"><div><div class="eyebrow"><span class="dash"></span> ПРОИСХОЖДЕНИЕ МАТЕРИАЛОВ</div><h1>Знания с <em>основанием.</em></h1><p>Какие эфиры легли в основу курса и как мы отличаем впечатления экспертов от проверяемых сведений о продукте.</p></div></div>
+ <div class="source-intro"><div><span class="overline">НАША РЕДАКЦИОННАЯ ПОЛИТИКА</span><h2>Говорить об ароматах<br>можно красиво. <em>И точно.</em></h2></div><p>Слова спикеров сохраняются как профессиональные наблюдения и рекомендации. Состав, артикулы, цена на дату каталога и объявленные коллекции отделены от личных оценок. Это внутреннее независимое пособие, не официальный образовательный продукт Greenway.</p></div>
+ <div id="source-list" class="source-grid"></div>
+ <div class="source-warning"><h3>Что обязательно перепроверять</h3><p>Наличие аромата в стране, актуальные цены и PV, состав набора пробников, конкретную концентрацию и партию, а также любые заявления о сходстве с другими брендами. Для окончательного заказа используйте действующий официальный магазин.</p><a href="https://greenwayglobal.com" target="_blank" rel="noopener">Официальный сайт Greenway ↗</a></div>
+ </div>
+</section>
+</main>
+<div class="modal" id="aroma-modal" aria-hidden="true"><div class="modal-backdrop" data-close-modal></div><div class="modal-card" id="aroma-details" role="dialog" aria-modal="true" aria-label="Карточка аромата" tabindex="-1"></div></div>
+<footer><div class="wrap footer-inner"><div class="footer-brand">scent<span>.</span>guide<small>LEARN THE LANGUAGE OF SCENT</small></div><div>Создано для самостоятельного обучения партнёров. Без регистрации и личных кабинетов.</div><div>Неофициальный образовательный проект<br>© 2026 · Данные каталога от 07.10.2026</div></div></footer>
+<script defer src="./assets/app.js"></script>
+</body></html>
