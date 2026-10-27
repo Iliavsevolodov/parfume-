@@ -11,14 +11,13 @@ function noteText(r){return ['Верхние ноты','Средние ноты'
 function escText(x){return E(x||'—')}
 function goTop(){window.scrollTo({top:0,behavior:'smooth'})}
 function switchView(view){
- if(!['academy','catalog','match','sources'].includes(view))return;
+ if(!['academy','catalog','match'].includes(view))return;
  state.view=view;
  document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+view));
  document.querySelectorAll('.nav-link').forEach(el=>el.classList.toggle('active',el.dataset.view===view));
  $('mobileMenu').setAttribute('aria-expanded','false');document.querySelector('.main-nav').classList.remove('open');
  if(view==='academy')showAcademyHome();
  if(view==='catalog')renderCatalog();
- if(view==='sources')renderSources();
  goTop();
 }
 function progress(){
@@ -53,7 +52,6 @@ function renderLesson(){
  const l=state.course.lessons[state.lesson], idx=state.lesson;
  $('lesson-group').textContent=l.group;
  $('lesson-outline').innerHTML=state.course.lessons.map((x,i)=>'<button type="button" data-lesson="'+i+'" class="outline-item '+(idx===i?'active ':'')+(state.passed.has(x.id)?'done':'')+'"><span>'+(state.passed.has(x.id)?'✓':String(i+1).padStart(2,'0'))+'</span>'+E(x.title)+'</button>').join('');
- const sources=(l.source||[]).filter(k=>state.course.sources[k]).map(k=>'<li>'+E(state.course.sources[k].title)+'</li>').join('');
  const parts=l.parts.map((p,i)=>'<section class="lesson-part"><h2>'+String(i+1).padStart(2,'0')+'. '+E(p.heading)+'</h2><p>'+E(p.text)+'</p></section>').join('');
  const a=state.answers[l.id], complete=state.passed.has(l.id);
  const options=l.quiz.answers.map((option,i)=>{
@@ -62,10 +60,10 @@ function renderLesson(){
  }).join('');
  $('lesson-article').innerHTML='<div class="lesson-overline"><span>'+E(l.group)+'</span><span>·</span><span>УРОК '+String(idx+1).padStart(2,'0')+'</span></div>'
  +'<h1>'+E(l.title)+'</h1><p class="lesson-lead">'+E(l.lead)+'</p>'
- +'<div class="lesson-metadata"><span>◷ '+E(l.reading)+' минут</span><span>ТЕОРИЯ ИЗ ЭФИРОВ</span><span>'+(complete?'✓ ПРОЙДЕНО':'НЕ ПРОЙДЕНО')+'</span></div>'
+ +'<div class="lesson-metadata"><span>◷ '+E(l.reading)+' минут</span><span>АВТОРСКИЙ УРОК</span><span>'+(complete?'✓ ПРОЙДЕНО':'НЕ ПРОЙДЕНО')+'</span></div>'
  +parts
  +'<section class="lesson-practice"><span>ЗАКРЕПЛЯЕМ НА ПРАКТИКЕ</span><h3>Ваша практика</h3><p>'+E(l.practice)+'</p></section>'
- +'<section class="source-cite"><span>МАТЕРИАЛЫ УРОКА</span><h3>На каких источниках основан урок</h3><ul>'+sources+'</ul></section>'
+ +'<section class="lesson-summary"><span class="overline">ГЛАВНЫЕ МЫСЛИ</span><div class="summary-items">'+l.parts.map(p=>'<div>'+E(p.heading)+'</div>').join('')+'</div></section>'
  +'<section class="lesson-test" id="lesson-test"><span class="overline">ПРОВЕРЬТЕ СЕБЯ</span><h3>'+E(l.quiz.question)+'</h3>'+options+(a!==undefined?'<div class="test-feedback '+(a===l.quiz.correct?'correct':'incorrect')+'"><b>'+(a===l.quiz.correct?'Верно! Урок отмечен как пройденный.':'Пока не совсем. Можно выбрать другой ответ.')+'</b><div>'+E(l.quiz.explanation)+'</div></div>':'')+'</section>'
  +'<div class="lesson-bottom"><button class="btn btn-outline" data-lesson="'+Math.max(0,idx-1)+'" '+(idx===0?'disabled':'')+'>← Предыдущий урок</button><button class="btn btn-dark" data-lesson="'+Math.min(state.course.lessons.length-1,idx+1)+'" '+(idx===state.course.lessons.length-1?'disabled':'')+'>Следующий урок ↗</button></div>';
 }
@@ -108,23 +106,19 @@ function aromaModal(idx){
  ['База',V(r,'Базовые ноты')],
  ['Дополнительные ноты',V(r,'Ноты без деления')]
  ].filter(pair=>pair[1]);
- $('aroma-details').innerHTML='<button type="button" class="modal-close" data-close-modal aria-label="Закрыть">×</button><span class="overline">'+E(collectionName(r))+' / '+E(V(r,'Категория'))+'</span><h2>'+E(code)+'</h2><p class="meta-note">'+E(V(r,'Характер')||'Подробная характеристика в доступном источнике не указана.')+'</p>'
- +(pyramid.length?'<div class="note-table">'+pyramid.map(([key,val])=>'<div class="note-row"><b>'+E(key)+'</b><div>'+E(val)+'</div></div>').join('')+'</div>':'<div class="modal-info">Полная пирамида не подтверждена российским каталогом от 07.10.2026. Уточните информацию до рекомендации.</div>')
+ $('aroma-details').innerHTML='<button type="button" class="modal-close" data-close-modal aria-label="Закрыть">×</button><span class="overline">'+E(collectionName(r))+' / '+E(V(r,'Категория'))+'</span><h2>'+E(code)+'</h2><p class="meta-note">'+E(V(r,'Характер')||'Описание этого аромата пока уточняется.')+'</p>'
+ +(pyramid.length?'<div class="note-table">'+pyramid.map(([key,val])=>'<div class="note-row"><b>'+E(key)+'</b><div>'+E(val)+'</div></div>').join('')+'</div>':'<div class="modal-info">Пирамида нот пока не заполнена. Уточните характеристики перед рекомендацией.</div>')
  +'<div class="modal-info"><b>Формат и данные заказа</b><p>Объём: '+(vol?E(vol)+' мл':'уточнить')+'<br>Артикул флакона: '+escText(V(r,'Артикул флакона'))+'<br>Пробник: '+escText(V(r,'Объем пробника, мл'))+' мл / арт. '+escText(V(r,'Артикул пробника'))+'<br>Цена флакона на '+repoDate+': '+(price?nfmt(price)+' ₽':'не указана')+'</p></div>'
- +'<p class="meta-note">'+(known?'Источник: каталог Greenway РФ от 07.10.2026, стр. '+E(V(r,'Страница каталога'))+'.':'Источник: архивная новость о запуске. Текущее наличие в России не установлено.')+' Не забудьте проверить актуальную цену и доступность товара в официальном магазине.</p>'
+ +'<p class="meta-note">'+(known?'Описание аромата заполнено.':'Лимитированная позиция: подробные характеристики требуют уточнения.')+' Перед покупкой проверьте актуальную цену и наличие.</p>'
  +'<div class="modal-footer"><button type="button" data-copy="'+idx+'">Скопировать подборку ↗</button><button type="button" data-close-modal>Закрыть</button></div>';
  $('aroma-modal').classList.add('open');$('aroma-modal').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';$('aroma-details').focus();
 }
 function closeModal(){$('aroma-modal').classList.remove('open');$('aroma-modal').setAttribute('aria-hidden','true');document.body.style.overflow='';}
 async function copyAroma(idx){
  const r=state.aromas[idx];if(!r)return;
- const t=[V(r,'Код аромата'),V(r,'Характер'),'Верхние ноты: '+V(r,'Верхние ноты'),'Средние: '+V(r,'Средние ноты'),'База: '+V(r,'Базовые ноты'),'Артикул: '+V(r,'Артикул флакона'),'Данные каталога Greenway от 07.10.2026. Наличие и цены уточняйте.'].join('\n');
+ const t=[V(r,'Код аромата'),V(r,'Характер'),'Верхние ноты: '+V(r,'Верхние ноты'),'Средние: '+V(r,'Средние ноты'),'База: '+V(r,'Базовые ноты'),'Артикул: '+V(r,'Артикул флакона'),'Наличие и цены уточняйте перед заказом.'].join('\n');
  try{await navigator.clipboard.writeText(t);const btn=document.querySelector('[data-copy]');if(btn)btn.textContent='Скопировано ✓';}
  catch(e){alert('Не удалось скопировать. Откройте карточку в защищённом браузере.');}
-}
-function renderSources(){
- if(!state.course)return;
- $('source-list').innerHTML=Object.entries(state.course.sources).map(([key,s],i)=>'<article class="source-card"><span>ИСТОЧНИК '+String(i+1).padStart(2,'0')+'</span><h3>'+E(s.title)+'</h3><p>'+E(s.detail)+'</p></article>').join('');
 }
 const matchTokens={
 fresh:['цитрус','бергамот','грейпфрут','лимон','морск','водн','лайм','мята','свеж','зелён'],
@@ -222,13 +216,12 @@ async function boot(){
  const responses=await Promise.all([fetch('./data/fragrances.json'),fetch('./data/academy.json')]);
  if(responses.some(r=>!r.ok))throw Error('HTTP '+responses.map(r=>r.status).join('/'));
  const [aromas,course]=await Promise.all(responses.map(r=>r.json()));
- if(!Array.isArray(aromas)||!Array.isArray(course.lessons)||!course.sources)throw Error('Invalid data format');
- state.aromas=aromas;state.course=course;renderAcademy();renderCatalog();renderSources();
+ if(!Array.isArray(aromas)||!Array.isArray(course.lessons))throw Error('Invalid data format');
+ state.aromas=aromas;state.course=course;renderAcademy();renderCatalog();$('hero-lesson-count').textContent=course.lessons.length+' УРОКОВ С ТЕОРИЕЙ';$('hero-chapter-count').textContent=new Set(course.lessons.map(l=>l.group)).size+' РАЗДЕЛОВ';
  }catch(error){
   console.error('SCENT GUIDE loading error',error);
   $('course-list').innerHTML='<div class="empty">Не удалось загрузить программу. Обновите страницу или проверьте подключение.</div>';
   $('catalog-grid').innerHTML='<div class="empty">Каталог временно недоступен.</div>';
-  $('source-list').innerHTML='<div class="empty">Источники временно недоступны.</div>';
  }
  if('serviceWorker' in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 }
