@@ -33,3 +33,83 @@ footer{background:#282322;color:#c8bab1;margin-top:80px}.footer-inner{padding-to
 .exam-warning{background:#f4e7e2}.exam-warning h2{font-size:28px}.exam-errors{padding:20px 28px;background:#fffcf7;border:1px solid var(--line);margin:15px 0 26px}.exam-errors h3{font:500 28px "Playfair Display",Georgia,serif}
 .exam-errors>div{border-top:1px solid var(--line);padding:17px 0}.exam-errors b{font-size:12px}.exam-errors p{font-size:12px;line-height:1.9;color:#7e7065;margin:6px 0 0}
 @media(max-width:700px){.exam-invite{flex-direction:column;align-items:stretch;padding:26px 22px;gap:22px}.exam-invite h2{font-size:28px}.exam-invite button{width:100%}.exam-page{padding-top:29px}.exam-question{padding:18px 17px}.exam-question legend{font-size:20px}.exam-score{padding:25px}}
+
+/* SCENT GUIDE 3.0 — iconography & learning experience */
+.icon{display:inline-block;width:18px;height:18px;stroke:currentColor;fill:none;vertical-align:middle;flex:none}
+.icon use{pointer-events:none}
+.nav-link{display:inline-flex;align-items:center;gap:9px}
+.nav-link .icon{width:16px;height:16px;stroke-width:1.7}
+.nav-link.active{color:#6b4447}
+.head-right .header-spark{width:18px;height:18px;color:#a98375}
+.mobile-menu .icon{width:26px;height:26px}
+.hero-actions .icon,.btn .icon,.text-link .icon{width:17px;height:17px}
+.hero-actions .btn:hover .icon,.text-link:hover .icon{transform:translate(3px,-3px);transition:transform .2s}
+.value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid var(--line)}
+.value-card{padding:30px 25px 30px 0;display:flex;gap:19px;align-items:flex-start;min-height:130px}
+.value-card+.value-card{border-left:1px solid var(--line);padding-left:27px}
+.value-card .value-icon{width:45px;height:45px;min-width:45px;display:flex;align-items:center;justify-content:center;background:#e9d9ce;color:#754f4e;border-radius:11px}
+.value-icon .icon{width:22px;height:22px}
+.value-card strong{font-size:13px;color:#463734;font-weight:800}
+.value-card p{font-size:11px;line-height:1.85;color:#86796e;margin:6px 0 0}
+.course-grid{gap:16px}
+.course-card{overflow:hidden;padding:22px 25px 21px;border-radius:9px;box-shadow:0 4px 20px rgba(69,47,35,.025)}
+.course-card:before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#b58d83,#e8cbb7,transparent);opacity:.7}
+.course-card-mark{width:38px;height:38px;border:1px solid rgba(130,95,81,.18);background:#f4eae2;color:#9d786d;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:15px;transition:background .2s,color .2s}
+.course-card:hover .course-card-mark{background:#6d4549;color:#fff}
+.course-card-mark .icon{width:19px;height:19px}
+.course-card h3{margin-top:17px}
+.course-card .done-mark{display:inline-flex;align-items:center;gap:5px}
+.done-mark .icon{width:13px;height:13px}
+.course-card .cc-arrow{display:flex;align-items:center;color:#91685d}
+.cc-arrow .icon{width:18px;height:18px}
+.course-card:nth-child(6n+2){background:#f3eae5}
+.course-card:nth-child(6n+3){background:#f3f0e9}
+.course-card:nth-child(6n+4){background:#faf4ed}
+.course-card:nth-child(6n+5){background:#efe3db}
+.course-card:nth-child(6n+6){background:#f9f8f3}
+.course-progress .overline{display:flex;gap:8px;align-items:center}
+.bottom-note{border-radius:8px;background:#eae2da;align-items:flex-start}
+.bottom-note .little-star{font-size:initial;background:#fff9f4;border-radius:10px;min-width:50px;min-height:50px;display:grid;place-items:center;color:#926c65}
+.bottom-note .little-star .icon{width:27px;height:27px}
+.lesson-practice{border-radius:6px 12px 12px 6px}
+.lesson-practice>span,.lesson-test .overline,.lesson-summary .overline{display:flex;align-items:center;gap:8px}
+.lesson-practice>span .icon{width:15px;height:15px}
+.lesson-metadata{gap:25px}
+.lesson-metadata>span{display:flex;align-items:center;gap:7px}
+.lesson-metadata .icon{width:14px;height:14px}
+.lesson-summary{background:#f0eee7;border:1px solid #e4dfd5;border-radius:10px;padding:28px 32px;margin:28px 0}
+.summary-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:21px}
+.summary-items div{display:flex;align-items:center;gap:9px;color:#5d534e;font-size:12px;line-height:1.7}
+.summary-items .icon{color:#73917d;width:17px;height:17px}
+.lesson-test{border-radius:10px}
+.lesson-test .overline .icon{width:17px;height:17px}
+.option{border-radius:7px}
+.test-feedback{border-radius:5px}
+.lesson-bottom .btn{display:inline-flex;align-items:center;justify-content:space-between}
+.outline-item span:has(.icon){display:inline-flex;justify-content:center;align-items:center}
+.outline-item .icon{width:14px;height:14px;color:#5f957d}
+.search-wrap>.icon{color:#a98976;width:23px;height:23px;margin-left:17px}
+.search-wrap input{padding:17px 15px}
+.abstract-circle .icon{width:48px;height:48px;stroke-width:1.3}
+.modal-close .icon{width:24px;height:24px}
+.modal-footer button{display:inline-flex;gap:9px;align-items:center}
+.modal-footer button .icon{width:16px;height:16px}
+.match-result>.icon{color:#805b50;width:20px;height:20px}
+.exam-invite{border-radius:10px}
+.exam-option{border-radius:6px}
+.exam-score{border-radius:10px}
+.icon[aria-hidden=true]{pointer-events:none}
+@media(max-width:1100px){.value-card{padding:22px 13px 25px 0;gap:12px}.value-card+.value-card{padding-left:13px}}
+@media(max-width:700px){
+ .mobile-menu{display:flex}.mobile-menu .icon{width:25px;height:25px}
+ .value-grid{grid-template-columns:1fr;gap:0}
+ .value-card,.value-card+.value-card{min-height:0;padding:19px 0;border-left:0;border-bottom:1px solid var(--line);gap:15px}
+ .value-card:last-child{border-bottom:0}
+ .value-card p{margin-top:3px}
+ .course-card-mark{margin-bottom:10px}
+ .course-card h3{margin-top:12px}
+ .summary-items{grid-template-columns:1fr}
+ .lesson-summary{padding:22px 19px}
+ .lesson-bottom .btn{gap:12px}
+ .nav-link .icon{width:19px;height:19px}
+}
