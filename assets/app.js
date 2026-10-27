@@ -1,42 +1,198 @@
-let DATA=[];
-const $=x=>document.getElementById(x);const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const lessons=[
-['01','Как устроен аромат','Верхние ноты создают первое впечатление, средние формируют характер, базовые ощущаются в дальнейшем раскрытии. Список нот — описание композиции, а не полный перечень ингредиентов.','Возьмите Classic 148 и назовите его верхние, средние и базовые ноты.'],
-['02','Семейства ароматов','Ориентируйтесь на цветочные, цитрусовые, фруктовые, древесные, пряные, гурманские, пудровые и морские направления. У одной композиции может быть несколько направлений.','Найдите в каталоге 2 цитрусовых, 2 сладких и 2 древесных аромата.'],
-['03','Как знакомить с пробниками','Используйте блоттеры для первичного знакомства, не наносите аромат на другого человека без согласия. Предложите 2–3 варианта, затем один протестируйте на коже и дайте время на раскрытие.','Проведите короткий подбор и запишите, что понравилось человеку в первые минуты и спустя время.'],
-['04','Консультация без давления','Уточните любимые и нелюбимые ноты, цель покупки, бюджет, прошлый опыт и комфортную интенсивность. Покажите несколько вариантов и дайте человеку сравнить самому.','Составьте 5 открытых вопросов и предложите 3 аромата с аргументацией по нотам.'],
-['05','Как корректно говорить о продукте','Различайте духи Classic/Luxe и туалетную воду Day-to-Day. Цены, PV и наличие меняются. Не обещайте фиксированную стойкость, точную схожесть с брендом или гарантированную реакцию окружающих.','Запишите 30-секундный рассказ об аромате на основе каталога без преувеличений.'],
-['06','Практика новичка: 7 дней','День 1: изучите 6 направлений. День 2: познакомьтесь с 5 пробниками. День 3: составьте мини-подборки. День 4: снимите полезное видео. День 5: проведите консультацию. День 6: обсудите обратную связь. День 7: разберите результат с наставником.','Проведите минимум одну реальную консультацию с добровольным согласием собеседника.']
-];
-function price(r){return r['Цена флакона, ₽']?Number(r['Цена флакона, ₽']).toLocaleString('ru-RU')+' ₽':'Цена уточняется'}
-function note(r){return [r['Характер'],r['Верхние ноты'],r['Средние ноты'],r['Базовые ноты'],r['Ноты без деления']].filter(Boolean).join(' ').toLowerCase()}
-function renderCard(r){let verified=r['Статус источника']==='Каталог РФ';return `<article class="perfume"><div class="meta">${safe(r['Коллекция'])} / ${safe(r['Категория'])}</div><div class="number">${safe(r['Номер'])}</div><div class="flavor">${safe(r['Характер'])}</div><div class="foot"><span class="tag ${verified?'':'pending'}">${verified?price(r):'УТОЧНИТЬ'}</span><button class="outline" data-key="${safe(r['Код аромата'])}">ПОДРОБНЕЕ ↗</button></div></article>`}
-function drawCatalog(){let txt=$('search').value.trim().toLowerCase(),cat=$('sex').value,typ=$('collection').value;let rows=DATA.filter(r=>(cat==='any'||r['Категория']===cat)&&(typ==='any'||r['Коллекция']===typ)&&(!txt||[r['Номер'],r['Код аромата'],r['Характер'],r['Артикул флакона'],r['Артикул пробника'],note(r)].join(' ').toLowerCase().includes(txt)));$('shown').textContent=rows.length;$('cards').innerHTML=rows.length?rows.map(renderCard).join(''):'<div class="noresults">Ничего не найдено. Попробуйте другой номер или ноту.</div>'}
-function detail(r){let isCat=r['Статус источника']==='Каталог РФ';const b=(title,value)=>value?`<div class="detailblock"><strong>${title}</strong><span>${safe(value)}</span></div>`:'';$('drawer').innerHTML=`<div class="drawer-head"><span class="tiny">${safe(r['Коллекция'])} / ${safe(r['Категория'])}</span><button class="close" id="close">ЗАКРЫТЬ ✕</button></div><div class="n">${safe(r['Номер'])}</div><h2>${safe(r['Характер'])}</h2><div class="chips"><span class="chip">${safe(r['Тип'])}</span><span class="chip">${safe(r['Объем, мл'])} мл</span><span class="chip">${safe(r['Статус источника'])}</span></div><div class="more">${b('Верхние ноты',r['Верхние ноты'])}${b('Средние ноты',r['Средние ноты'])}${b('Базовые ноты',r['Базовые ноты'])}${b('Ноты без деления',r['Ноты без деления'])}${b('Артикул флакона',r['Артикул флакона'])}${b('Артикул пробника 2 мл',r['Артикул пробника'])}${b('Цена флакона на дату каталога',isCat?price(r):'Данных для РФ нет')}${b('Цена пробника на дату каталога',isCat?r['Цена пробника, ₽']+' ₽':'Данных для РФ нет')}${b('PV флакона на дату каталога',r['PV флакона'])}${b('Основание',r['Источник'])}${b('Наличие',r['Доступность'])}</div><div class="callout">Информация не гарантирует доступность к заказу. Проверьте официальный магазин.</div><button class="yellowbutton" id="copy" style="width:100%">СКОПИРОВАТЬ ОПИСАНИЕ</button>`;$('overlay').classList.add('open');document.body.style.overflow='hidden';$('close').onclick=closeDrawer;$('copy').onclick=()=>{const t=[r['Код аромата'],r['Характер'],r['Верхние ноты']&&'Верх: '+r['Верхние ноты'],r['Средние ноты']&&'Сердце: '+r['Средние ноты'],r['Базовые ноты']&&'База: '+r['Базовые ноты'],r['Ноты без деления']&&'Ноты: '+r['Ноты без деления'],'Цена по каталогу: '+price(r),'Актуальное наличие уточняется'].filter(Boolean).join('\n');navigator.clipboard?.writeText(t).then(()=>{$('copy').textContent='СКОПИРОВАНО ✓'}).catch(()=>window.prompt('Скопируйте описание:',t))}}
-function closeDrawer(){$('overlay').classList.remove('open');document.body.style.overflow=''}
-$('overlay').onclick=e=>{if(e.target===$('overlay'))closeDrawer()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});document.addEventListener('click',e=>{const b=e.target.closest('[data-key]');if(b){let r=DATA.find(x=>x['Код аромата']===b.dataset.key);if(r)detail(r)}});
-for(let id of ['search','sex','collection'])$(id).addEventListener('input',drawCatalog);
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));$(b.dataset.tab).classList.add('active');if(b.dataset.tab==='catalog')drawCatalog();window.scrollTo({top:0,behavior:'smooth'})});
-const words={fresh:'цитрус бергамот грейпфрут лимон лайм морск озон мята свежий свежая водный зелён зелён',flower:'роза жасмин пион фрезия тубероза сирень лотос магнолия цветочный цветочно',sweet:'ваниль карамель мёд пралине какао сахар ликёр сладкий гурманский миндаль вишня',wood:'сандал кедр ветивер древесн пачули кожа кожан дубовый мох',spice:'кардамон шафран корица перец имбирь мускатн пряный восточный ориентальный',fruit:'персик груша яблоко малина смородина вишня ананас манго фруктовый',powder:'ирис мускус фиалка гелиотроп пудровый пудрово'};
-function recommend(){const sex=$('p-sex').value,fam=$('p-family').value,occasion=$('p-occasion').value,tier=$('p-collection').value;const tokens=words[fam].split(' ');const scored=DATA.filter(r=>r['Статус источника']==='Каталог РФ'&&(sex==='any'||r['Категория']===sex||sex!=='Унисекс'&&r['Категория']==='Унисекс')&&(tier==='any'||r['Коллекция']===tier)).map(r=>{const t=note(r);const match=tokens.filter(w=>t.includes(w));let score=match.length*3;if(occasion==='everyday'&&r['Коллекция']==='Day-to-Day')score+=2;if(occasion==='evening'&&r['Коллекция']==='Luxe')score+=2;if(occasion==='evening'&&/(особого случая|притягательный|пленительный|восточн|амбров)/.test(t))score+=1;return {r,score,match}}).sort((a,b)=>b.score-a.score||Number(a.r['Номер'])-Number(b.r['Номер'])).slice(0,5);$('recommendations').innerHTML='<div class="kicker">РЕКОМЕНДАЦИИ</div><h3>Пять ароматов для знакомства</h3>'+scored.map((x,i)=>`<div class="suggest" data-key="${safe(x.r['Код аромата'])}"><b>${i+1}. ${safe(x.r['Код аромата'])}</b><div>${safe(x.r['Характер'])}</div><small>${x.match.length?'Ноты и признаки: '+safe(x.match.slice(0,4).join(', ')):'Подобран по дополнительным признакам'} · ${price(x.r)} по каталогу</small></div>`).join('')+'<small>Сортировка носит справочный характер: совпадение — по словам из описания и нотам, а не объективная оценка ваших ощущений.</small>'}
-$('pick-form').onsubmit=e=>{e.preventDefault();recommend()};
-const STORE={get(){try{return JSON.parse(localStorage.getItem('scent_done')||'[]')}catch{return window._scentMemory||[]}},set(arr){window._scentMemory=arr;try{localStorage.setItem('scent_done',JSON.stringify(arr))}catch{}}};
-function lessonsUI(){let done=STORE.get();$('learning').innerHTML=lessons.map(([num,title,body,exercise],i)=>`<div class="lesson"><span class="kicker">УРОК ${num}</span><h3>${title}</h3><p>${body}</p><p><b>Практика:</b> ${exercise}</p><label><input type="checkbox" data-lesson="${i}" ${done.includes(i)?'checked':''}> Отметить как пройденный</label></div>`).join('');$('progress').textContent=done.length+' из 6';document.querySelectorAll('[data-lesson]').forEach(el=>el.onchange=()=>{let s=new Set(STORE.get());el.checked?s.add(Number(el.dataset.lesson)):s.delete(Number(el.dataset.lesson));STORE.set([...s]);$('progress').textContent=s.size+' из 6'})}
-
-// Source of truth: data/fragrances.json, with the original catalog references.
-fetch('./data/fragrances.json').then(response=>{
-  if(!response.ok) throw new Error('HTTP '+response.status);
-  return response.json();
-}).then(rows=>{
-  if(!Array.isArray(rows)) throw new Error('Invalid fragrance data');
-  DATA=rows;drawCatalog();lessonsUI();
-}).catch(error=>{
-  console.error('Catalog unavailable:',error);
-  $('cards').innerHTML='<p class="noresults">Каталог не загрузился. Обновите страницу или попробуйте позднее.</p>';
-  $('recommendations').innerHTML='<p class="noresults">Данные временно недоступны.</p>';
-  lessonsUI();
-});
-if('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+'use strict';
+const $=id=>document.getElementById(id);
+const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const V=(r,k)=>r?.[k]??'';
+const repoDate='07.10.2026';
+const state={aromas:[],course:null,lesson:null,group:'all',query:'',collection:'',gender:'',limit:24,answers:{},passed:new Set(),view:'academy'};
+try{state.passed=new Set(JSON.parse(localStorage.getItem('scentguide-progress-v2')||'[]'));}catch(e){}
+const collectionName=r=>V(r,'Коллекция')||'';
+const nfmt=v=>Number(v).toLocaleString('ru-RU');
+function noteText(r){return ['Верхние ноты','Средние ноты','Базовые ноты','Ноты без деления'].map(k=>V(r,k)).filter(Boolean).join(' · ');}
+function escText(x){return E(x||'—')}
+function goTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function switchView(view){
+ if(!['academy','catalog','match','sources'].includes(view))return;
+ state.view=view;
+ document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+view));
+ document.querySelectorAll('.nav-link').forEach(el=>el.classList.toggle('active',el.dataset.view===view));
+ $('mobileMenu').setAttribute('aria-expanded','false');document.querySelector('.main-nav').classList.remove('open');
+ if(view==='academy')showAcademyHome();
+ if(view==='catalog')renderCatalog();
+ if(view==='sources')renderSources();
+ goTop();
 }
-
+function progress(){
+ if(!state.course)return;
+ const done=state.course.lessons.filter(l=>state.passed.has(l.id)).length;
+ $('progress-text').textContent=done+' из '+state.course.lessons.length+' уроков завершено';
+ const pct=Math.round(100*done/state.course.lessons.length);
+ $('progress-percent').textContent=pct+'%';$('progress-bar').style.width=pct+'%';
+}
+function renderAcademy(){
+ if(!state.course)return;
+ progress();
+ const groups=['all',...new Set(state.course.lessons.map(l=>l.group))];
+ $('course-filters').innerHTML=groups.map(g=>'<button class="pill '+(state.group===g?'active':'')+'" type="button" data-filter="'+E(g)+'">'+(g==='all'?'Все уроки':E(g.replace(/^\\d+ \\/ /,'')))+'</button>').join('');
+ const list=state.course.lessons.map((lesson,i)=>({lesson,i})).filter(({lesson})=>state.group==='all'||lesson.group===state.group);
+ $('course-list').innerHTML=list.map(({lesson:l,i})=>'<button class="course-card" data-lesson="'+i+'" type="button"><div class="cc-top"><span>'+E(l.group)+'</span><span class="done-mark">'+(state.passed.has(l.id)?'✓ Пройдено':E(l.reading+' мин · теория'))+'</span></div><h3>'+E(l.title)+'</h3><p>'+E(l.lead)+'</p><div class="cc-bottom"><span>УРОК '+String(i+1).padStart(2,'0')+' / '+state.course.lessons.length+'</span><span class="cc-arrow">↗</span></div></button>').join('')||'<div class="empty">Уроки не найдены</div>';
+}
+function showAcademyHome(){
+ state.lesson=null;$('academy-home').hidden=false;$('lesson-view').hidden=true;
+ renderAcademy();
+}
+function openLesson(idx){
+ if(!state.course||idx<0||idx>=state.course.lessons.length)return;
+ state.lesson=idx;state.view='academy';
+ document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-academy'));
+ document.querySelectorAll('.nav-link').forEach(el=>el.classList.toggle('active',el.dataset.view==='academy'));
+ $('academy-home').hidden=true;$('lesson-view').hidden=false;
+ renderLesson();goTop();
+}
+function renderLesson(){
+ if(state.lesson===null)return;
+ const l=state.course.lessons[state.lesson], idx=state.lesson;
+ $('lesson-group').textContent=l.group;
+ $('lesson-outline').innerHTML=state.course.lessons.map((x,i)=>'<button type="button" data-lesson="'+i+'" class="outline-item '+(idx===i?'active ':'')+(state.passed.has(x.id)?'done':'')+'"><span>'+(state.passed.has(x.id)?'✓':String(i+1).padStart(2,'0'))+'</span>'+E(x.title)+'</button>').join('');
+ const sources=(l.source||[]).filter(k=>state.course.sources[k]).map(k=>'<li>'+E(state.course.sources[k].title)+'</li>').join('');
+ const parts=l.parts.map((p,i)=>'<section class="lesson-part"><h2>'+String(i+1).padStart(2,'0')+'. '+E(p.heading)+'</h2><p>'+E(p.text)+'</p></section>').join('');
+ const a=state.answers[l.id], complete=state.passed.has(l.id);
+ const options=l.quiz.answers.map((option,i)=>{
+ const cn=a!==undefined?(i===l.quiz.correct?'right':a===i?'wrong':''):'';
+ return '<button type="button" class="option '+cn+'" data-answer="'+i+'"><span class="letter">'+String.fromCharCode(65+i)+'</span>'+E(option)+'</button>';
+ }).join('');
+ $('lesson-article').innerHTML='<div class="lesson-overline"><span>'+E(l.group)+'</span><span>·</span><span>УРОК '+String(idx+1).padStart(2,'0')+'</span></div>'
+ +'<h1>'+E(l.title)+'</h1><p class="lesson-lead">'+E(l.lead)+'</p>'
+ +'<div class="lesson-metadata"><span>◷ '+E(l.reading)+' минут</span><span>ТЕОРИЯ ИЗ ЭФИРОВ</span><span>'+(complete?'✓ ПРОЙДЕНО':'НЕ ПРОЙДЕНО')+'</span></div>'
+ +parts
+ +'<section class="lesson-practice"><span>ЗАКРЕПЛЯЕМ НА ПРАКТИКЕ</span><h3>Ваша практика</h3><p>'+E(l.practice)+'</p></section>'
+ +'<section class="source-cite"><span>МАТЕРИАЛЫ УРОКА</span><h3>На каких источниках основан урок</h3><ul>'+sources+'</ul></section>'
+ +'<section class="lesson-test" id="lesson-test"><span class="overline">ПРОВЕРЬТЕ СЕБЯ</span><h3>'+E(l.quiz.question)+'</h3>'+options+(a!==undefined?'<div class="test-feedback '+(a===l.quiz.correct?'correct':'incorrect')+'"><b>'+(a===l.quiz.correct?'Верно! Урок отмечен как пройденный.':'Пока не совсем. Можно выбрать другой ответ.')+'</b><div>'+E(l.quiz.explanation)+'</div></div>':'')+'</section>'
+ +'<div class="lesson-bottom"><button class="btn btn-outline" data-lesson="'+Math.max(0,idx-1)+'" '+(idx===0?'disabled':'')+'>← Предыдущий урок</button><button class="btn btn-dark" data-lesson="'+Math.min(state.course.lessons.length-1,idx+1)+'" '+(idx===state.course.lessons.length-1?'disabled':'')+'>Следующий урок ↗</button></div>';
+}
+function selectAnswer(num){
+ if(state.lesson===null)return;
+ const l=state.course.lessons[state.lesson];state.answers[l.id]=num;
+ if(num===l.quiz.correct){
+ state.passed.add(l.id);try{localStorage.setItem('scentguide-progress-v2',JSON.stringify([...state.passed]));}catch(e){}
+ }
+ renderLesson();progress();
+ const el=$('lesson-test');el?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function filteredCatalog(){
+ const q=state.query.trim().toLocaleLowerCase('ru-RU');
+ return state.aromas.map((r,i)=>({r,i})).filter(({r})=>{
+ if(state.collection&&collectionName(r)!==state.collection)return false;
+ if(state.gender&&V(r,'Категория')!==state.gender)return false;
+ if(!q)return true;
+ return [V(r,'Код аромата'),V(r,'Номер'),V(r,'Характер'),V(r,'Артикул флакона'),V(r,'Артикул пробника'),noteText(r)].some(v=>String(v).toLocaleLowerCase('ru-RU').includes(q));
+ });
+}
+function makeCard(item){
+ const r=item.r,i=item.i,c=collectionName(r),historical=V(r,'Статус источника')!=='Каталог РФ';
+ const price=V(r,'Цена флакона, ₽');
+ return '<button type="button" data-aroma="'+i+'" class="aroma-card" aria-label="Открыть '+E(V(r,'Код аромата'))+'"><div class="aroma-visual"><span class="visual-num">'+E(V(r,'Номер'))+'</span><span class="mini-bottle"></span><span class="visual-col">'+E(c.toUpperCase())+'</span></div><div><span class="overline">'+E(V(r,'Категория'))+' · '+E(c)+'</span><h3>'+E(V(r,'Код аромата'))+'</h3><p>'+E(V(r,'Характер')||'Описание из анонса; пирамиду уточнить')+'</p><div class="meta"><span>'+(V(r,'Объем, мл')?E(V(r,'Объем, мл'))+' мл':'Формат уточнить')+'</span><span>'+(price?nfmt(price)+' ₽*':'Без цены')+'</span><span class="mini-status">'+(historical?'Архив':'Каталог')+'</span></div></div></button>';
+}
+function renderCatalog(){
+ const items=filteredCatalog();
+ $('catalog-count').textContent='НАЙДЕНО '+items.length+' ИЗ '+state.aromas.length+' АРОМАТОВ';
+ $('catalog-grid').innerHTML=items.slice(0,state.limit).map(makeCard).join('')||'<div class="empty">Ароматы не найдены. Попробуйте изменить запрос.</div>';
+ $('showMore').hidden=items.length<=state.limit;
+}
+function aromaModal(idx){
+ const r=state.aromas[idx];if(!r)return;
+ const code=V(r,'Код аромата'),vol=V(r,'Объем, мл'),price=V(r,'Цена флакона, ₽');
+ const known=V(r,'Статус источника')==='Каталог РФ';
+ const pyramid=[
+ ['Верхние ноты',V(r,'Верхние ноты')],
+ ['Сердце',V(r,'Средние ноты')],
+ ['База',V(r,'Базовые ноты')],
+ ['Дополнительные ноты',V(r,'Ноты без деления')]
+ ].filter(pair=>pair[1]);
+ $('aroma-details').innerHTML='<button type="button" class="modal-close" data-close-modal aria-label="Закрыть">×</button><span class="overline">'+E(collectionName(r))+' / '+E(V(r,'Категория'))+'</span><h2>'+E(code)+'</h2><p class="meta-note">'+E(V(r,'Характер')||'Подробная характеристика в доступном источнике не указана.')+'</p>'
+ +(pyramid.length?'<div class="note-table">'+pyramid.map(([key,val])=>'<div class="note-row"><b>'+E(key)+'</b><div>'+E(val)+'</div></div>').join('')+'</div>':'<div class="modal-info">Полная пирамида не подтверждена российским каталогом от 07.10.2026. Уточните информацию до рекомендации.</div>')
+ +'<div class="modal-info"><b>Формат и данные заказа</b><p>Объём: '+(vol?E(vol)+' мл':'уточнить')+'<br>Артикул флакона: '+escText(V(r,'Артикул флакона'))+'<br>Пробник: '+escText(V(r,'Объем пробника, мл'))+' мл / арт. '+escText(V(r,'Артикул пробника'))+'<br>Цена флакона на '+repoDate+': '+(price?nfmt(price)+' ₽':'не указана')+'</p></div>'
+ +'<p class="meta-note">'+(known?'Источник: каталог Greenway РФ от 07.10.2026, стр. '+E(V(r,'Страница каталога'))+'.':'Источник: архивная новость о запуске. Текущее наличие в России не установлено.')+' Не забудьте проверить актуальную цену и доступность товара в официальном магазине.</p>'
+ +'<div class="modal-footer"><button type="button" data-copy="'+idx+'">Скопировать подборку ↗</button><button type="button" data-close-modal>Закрыть</button></div>';
+ $('aroma-modal').classList.add('open');$('aroma-modal').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';$('aroma-details').focus();
+}
+function closeModal(){$('aroma-modal').classList.remove('open');$('aroma-modal').setAttribute('aria-hidden','true');document.body.style.overflow='';}
+async function copyAroma(idx){
+ const r=state.aromas[idx];if(!r)return;
+ const t=[V(r,'Код аромата'),V(r,'Характер'),'Верхние ноты: '+V(r,'Верхние ноты'),'Средние: '+V(r,'Средние ноты'),'База: '+V(r,'Базовые ноты'),'Артикул: '+V(r,'Артикул флакона'),'Данные каталога Greenway от 07.10.2026. Наличие и цены уточняйте.'].join('\n');
+ try{await navigator.clipboard.writeText(t);const btn=document.querySelector('[data-copy]');if(btn)btn.textContent='Скопировано ✓';}
+ catch(e){alert('Не удалось скопировать. Откройте карточку в защищённом браузере.');}
+}
+function renderSources(){
+ if(!state.course)return;
+ $('source-list').innerHTML=Object.entries(state.course.sources).map(([key,s],i)=>'<article class="source-card"><span>ИСТОЧНИК '+String(i+1).padStart(2,'0')+'</span><h3>'+E(s.title)+'</h3><p>'+E(s.detail)+'</p></article>').join('');
+}
+const matchTokens={
+fresh:['цитрус','бергамот','грейпфрут','лимон','морск','водн','лайм','мята','свеж','зелён'],
+floral:['жасмин','роз','цвет','пион','тубероз','магнол','фиал','ландыш','лаванд'],
+sweet:['ванил','какао','кофе','миндал','тонка','карамел','мед','шоколад','пралине'],
+wood:['древес','кедр','сандал','ветивер','пачули','мох','гуаяк','лес'],
+fruit:['фрукт','яблок','манго','груш','смородин','персик','малин','личи','ягод','маракуй'],
+spice:['прян','перец','кардамон','имбирь','шафран','кориц','восточ','гвоздик','амбр']
+};
+function recommend(event){
+ event.preventDefault();if(!state.aromas.length)return;
+ const style=$('match-style').value,gender=$('match-who').value,usage=$('match-use').value;
+ const avoid=$('match-avoid').value.toLowerCase().split(/[,;]+/).map(x=>x.trim()).filter(x=>x.length>1);
+ const candidates=state.aromas.map((r,i)=>{
+ const character=String(V(r,'Характер')).toLowerCase(),notes=noteText(r).toLowerCase(),txt=character+' '+notes;
+ if(V(r,'Статус источника')!=='Каталог РФ')return null;
+ if(gender&&V(r,'Категория')!==gender&&V(r,'Категория')!=='Унисекс')return null;
+ if(avoid.some(w=>txt.includes(w)))return null;
+ let score=0,found=[];
+ for(const token of matchTokens[style])if(txt.includes(token)){score+=notes.includes(token)?2:1;found.push(token);}
+ if(usage==='everyday'&&collectionName(r)==='Day-to-Day')score+=2;
+ if(usage==='evening'&&collectionName(r)==='Luxe')score+=2;
+ if(score===0)return null;
+ return {r,i,score,found};
+ }).filter(Boolean).sort((a,b)=>b.score-a.score).slice(0,4);
+ const container=$('match-results');
+ if(!candidates.length){container.innerHTML='<span class="overline">ПОДБОРКА</span><h2>Точных совпадений нет</h2><p>Попробуйте изменить нежелательные ноты или направление. Мы не рекомендуем позиции без подтверждённых данных.</p>';return;}
+ container.innerHTML='<div class="match-results-head"><span class="overline">02 / ВАША ПОДБОРКА</span><h2>Попробуйте <em>эти ароматы</em></h2><p>Подборка сформирована по совпадениям заявленных нот и характеров. Нажмите на аромат, чтобы увидеть его пирамиду и артикул.</p></div>'
+ +candidates.map((x,i)=>'<button type="button" class="match-result" data-aroma="'+x.i+'"><span>'+String(i+1).padStart(2,'0')+'</span><div><h3>'+E(V(x.r,'Код аромата'))+'</h3><p>'+E(V(x.r,'Характер'))+'. Совпадения: '+E([...new Set(x.found)].slice(0,4).join(', '))+'.</p></div><i>↗</i></button>').join('')
+ +'<p class="meta-note" style="font-size:11px;color:#948276;margin-top:20px">Попробуйте 2–3 варианта на блоттерах перед выбором. Это не гарантия того, что аромат понравится.</p>';
+}
+function clickHandler(e){
+ const target=e.target.closest('button,[data-close-modal]');if(!target)return;
+ if(target.hasAttribute('data-close-modal')){closeModal();return;}
+ if(target.dataset.view){switchView(target.dataset.view);return;}
+ if(target.dataset.filter){state.group=target.dataset.filter;renderAcademy();return;}
+ if(target.dataset.lesson!==undefined){openLesson(Number(target.dataset.lesson));return;}
+ if(target.dataset.answer!==undefined){selectAnswer(Number(target.dataset.answer));return;}
+ if(target.dataset.aroma!==undefined){aromaModal(Number(target.dataset.aroma));return;}
+ if(target.dataset.copy!==undefined){copyAroma(Number(target.dataset.copy));return;}
+}
+async function boot(){
+ document.addEventListener('click',clickHandler);
+ $('homeLogo').addEventListener('click',()=>switchView('academy'));
+ $('mobileMenu').addEventListener('click',()=>{
+  const menu=document.querySelector('.main-nav'),open=menu.classList.toggle('open');
+  $('mobileMenu').setAttribute('aria-expanded',String(open));
+ });
+ $('startLearning').addEventListener('click',()=>openLesson(state.course?.lessons.findIndex(l=>!state.passed.has(l.id))<0?0:state.course.lessons.findIndex(l=>!state.passed.has(l.id))));
+ $('backAcademy').addEventListener('click',()=>{showAcademyHome();goTop()});
+ $('catalog-query').addEventListener('input',e=>{state.query=e.target.value;state.limit=24;renderCatalog()});
+ $('catalog-collection').addEventListener('change',e=>{state.collection=e.target.value;state.limit=24;renderCatalog()});
+ $('catalog-gender').addEventListener('change',e=>{state.gender=e.target.value;state.limit=24;renderCatalog()});
+ $('showMore').addEventListener('click',()=>{state.limit+=24;renderCatalog()});
+ $('match-form').addEventListener('submit',recommend);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+ try{
+ const responses=await Promise.all([fetch('./data/fragrances.json'),fetch('./data/academy.json')]);
+ if(responses.some(r=>!r.ok))throw Error('HTTP '+responses.map(r=>r.status).join('/'));
+ const [aromas,course]=await Promise.all(responses.map(r=>r.json()));
+ if(!Array.isArray(aromas)||!Array.isArray(course.lessons)||!course.sources)throw Error('Invalid data format');
+ state.aromas=aromas;state.course=course;renderAcademy();renderCatalog();renderSources();
+ }catch(error){
+  console.error('SCENT GUIDE loading error',error);
+  $('course-list').innerHTML='<div class="empty">Не удалось загрузить программу. Обновите страницу или проверьте подключение.</div>';
+  $('catalog-grid').innerHTML='<div class="empty">Каталог временно недоступен.</div>';
+  $('source-list').innerHTML='<div class="empty">Источники временно недоступны.</div>';
+ }
+ if('serviceWorker' in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
