@@ -1,5 +1,5 @@
-const VERSION='scent-guide-academy-v3';
-const FILES=['./','./index.html','./assets/styles.css','./assets/app.js','./assets/icon.svg','./data/fragrances.json','./data/academy.json','./manifest.webmanifest'];
+const VERSION='scent-guide-academy-v4';
+const FILES=['./','./index.html','./assets/styles.css','./assets/app.js','./assets/icon.svg','./assets/icons.svg','./data/fragrances.json','./data/academy.json','./manifest.webmanifest'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(VERSION).then(cache=>cache.addAll(FILES)));self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('scent-guide-')&&k!==VERSION).map(k=>caches.delete(k)))));self.clients.claim()});
 self.addEventListener('fetch',event=>{

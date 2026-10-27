@@ -1,7 +1,7 @@
 {
   "name": "SCENT GUIDE — Академия ароматов Greenway",
   "short_name": "SCENT GUIDE",
-  "description": "26 уроков по парфюмерии Enjoy Care, 83 аромата, подбор и тесты без регистрации",
+  "description": "32 урока по парфюмерии Enjoy Care, 83 аромата, подбор и экзамены без регистрации",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
