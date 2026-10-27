@@ -35,7 +35,7 @@ function renderAcademy(){
  const groups=['all',...new Set(state.course.lessons.map(l=>l.group))];
  $('course-filters').innerHTML=groups.map(g=>'<button class="pill '+(state.group===g?'active':'')+'" type="button" data-filter="'+E(g)+'">'+(g==='all'?'Все уроки':E(g.split(' / ').slice(1).join(' / ')))+'</button>').join('');
  const list=state.course.lessons.map((lesson,i)=>({lesson,i})).filter(({lesson})=>state.group==='all'||lesson.group===state.group);
- $('course-list').innerHTML=list.map(({lesson:l,i})=>'<button class="course-card" data-lesson="'+i+'" type="button"><div class="cc-top"><span>'+E(l.group)+'</span><span class="done-mark">'+(state.passed.has(l.id)?I('circle-check')+' Пройдено':I('clock')+' '+E(l.reading+' мин'))+'</span></div><h3>'+E(l.title)+'</h3><p>'+E(l.lead)+'</p><div class="cc-bottom"><span>УРОК '+String(i+1).padStart(2,'0')+' / '+state.course.lessons.length+'</span><span class="cc-arrow">'+I('arrow-up-right')+'</span></div></button>').join('')||'<div class="empty">Уроки не найдены</div>';
+ $('course-list').innerHTML=list.map(({lesson:l,i})=>'<button class="course-card" data-lesson="'+i+'" type="button"><div class="course-card-mark">'+I(GROUP_ICONS[l.group]||'sparkles')+'</div><div class="cc-top"><span>'+E(l.group)+'</span><span class="done-mark">'+(state.passed.has(l.id)?I('circle-check')+' Пройдено':I('clock')+' '+E(l.reading+' мин'))+'</span></div><h3>'+E(l.title)+'</h3><p>'+E(l.lead)+'</p><div class="cc-bottom"><span>УРОК '+String(i+1).padStart(2,'0')+' / '+state.course.lessons.length+'</span><span class="cc-arrow">'+I('arrow-up-right')+'</span></div></button>').join('')||'<div class="empty">Уроки не найдены</div>';
 }
 function showAcademyHome(){
  state.lesson=null;$('academy-home').hidden=false;$('lesson-view').hidden=true;$('exam-view').hidden=true;
@@ -112,7 +112,7 @@ function aromaModal(idx){
  +(pyramid.length?'<div class="note-table">'+pyramid.map(([key,val])=>'<div class="note-row"><b>'+E(key)+'</b><div>'+E(val)+'</div></div>').join('')+'</div>':'<div class="modal-info">Пирамида нот пока не заполнена. Уточните характеристики перед рекомендацией.</div>')
  +'<div class="modal-info"><b>Формат и данные заказа</b><p>Объём: '+(vol?E(vol)+' мл':'уточнить')+'<br>Артикул флакона: '+escText(V(r,'Артикул флакона'))+'<br>Пробник: '+escText(V(r,'Объем пробника, мл'))+' мл / арт. '+escText(V(r,'Артикул пробника'))+'<br>Цена флакона на '+repoDate+': '+(price?nfmt(price)+' ₽':'не указана')+'</p></div>'
  +'<p class="meta-note">'+(known?'Описание аромата заполнено.':'Лимитированная позиция: подробные характеристики требуют уточнения.')+' Перед покупкой проверьте актуальную цену и наличие.</p>'
- +'<div class="modal-footer"><button type="button" data-copy="'+idx+'">Скопировать подборку '+I('arrow-up-right')+'</button><button type="button" data-close-modal>Закрыть</button></div>';
+ +'<div class="modal-footer"><button type="button" data-copy="'+idx+'">'+I('copy')+' Копировать описание</button><button type="button" data-close-modal>Закрыть</button></div>';
  $('aroma-modal').classList.add('open');$('aroma-modal').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';$('aroma-details').focus();
 }
 function closeModal(){$('aroma-modal').classList.remove('open');$('aroma-modal').setAttribute('aria-hidden','true');document.body.style.overflow='';}
@@ -152,7 +152,7 @@ function recommend(event){
  +candidates.map((x,i)=>'<button type="button" class="match-result" data-aroma="'+x.i+'"><span>'+String(i+1).padStart(2,'0')+'</span><div><h3>'+E(V(x.r,'Код аромата'))+'</h3><p>'+E(V(x.r,'Характер'))+'. Совпадения: '+E([...new Set(x.found)].slice(0,4).join(', '))+'.</p></div><i>'+I('arrow-up-right')+'</i></button>').join('')
  +'<p class="meta-note" style="font-size:11px;color:#948276;margin-top:20px">Попробуйте 2–3 варианта на блоттерах перед выбором. Это не гарантия того, что аромат понравится.</p>';
 }
-const examIds=[0,1,2,3,4,5,6,8,9,10,11,12,13,14,15,17,21,25];
+const examIds=[0,1,2,3,4,5,6,8,9,10,11,27,13,28,15,17,21,31];
 function openExam(){
  if(!state.course)return;
  state.lesson=null;$('academy-home').hidden=true;$('lesson-view').hidden=true;$('exam-view').hidden=false;
