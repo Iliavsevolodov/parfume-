@@ -3,6 +3,7 @@ const $=id=>document.getElementById(id);
 const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const V=(r,k)=>r?.[k]??'';
 const I=(name,cls='')=>'<svg class="icon '+E(cls)+'" aria-hidden="true"><use href="./assets/icons.svg#'+E(name)+'"></use></svg>';
+const GROUP_ICONS={'01 / Основа':'book-open','02 / Звучание':'layers','03 / Enjoy Care':'droplets','04 / Консультация':'compass','05 / Практика':'notebook-pen','06 / Мастерство':'award','07 / Мастерская':'flask-conical'};
 const repoDate='07.10.2026';
 const state={aromas:[],course:null,lesson:null,group:'all',query:'',collection:'',gender:'',limit:24,answers:{},passed:new Set(),view:'academy'};
 try{state.passed=new Set(JSON.parse(localStorage.getItem('scentguide-progress-v2')||'[]'));}catch(e){}
@@ -34,7 +35,7 @@ function renderAcademy(){
  const groups=['all',...new Set(state.course.lessons.map(l=>l.group))];
  $('course-filters').innerHTML=groups.map(g=>'<button class="pill '+(state.group===g?'active':'')+'" type="button" data-filter="'+E(g)+'">'+(g==='all'?'Все уроки':E(g.split(' / ').slice(1).join(' / ')))+'</button>').join('');
  const list=state.course.lessons.map((lesson,i)=>({lesson,i})).filter(({lesson})=>state.group==='all'||lesson.group===state.group);
- $('course-list').innerHTML=list.map(({lesson:l,i})=>'<button class="course-card" data-lesson="'+i+'" type="button"><div class="cc-top"><span>'+E(l.group)+'</span><span class="done-mark">'+(state.passed.has(l.id)?I('circle-check')+' Пройдено':I('clock')+' '+E(l.reading+' мин'))+'</span></div><h3>'+E(l.title)+'</h3><p>'+E(l.lead)+'</p><div class="cc-bottom"><span>УРОК '+String(i+1).padStart(2,'0')+' / '+state.course.lessons.length+'</span><span class="cc-arrow">↗</span></div></button>').join('')||'<div class="empty">Уроки не найдены</div>';
+ $('course-list').innerHTML=list.map(({lesson:l,i})=>'<button class="course-card" data-lesson="'+i+'" type="button"><div class="cc-top"><span>'+E(l.group)+'</span><span class="done-mark">'+(state.passed.has(l.id)?I('circle-check')+' Пройдено':I('clock')+' '+E(l.reading+' мин'))+'</span></div><h3>'+E(l.title)+'</h3><p>'+E(l.lead)+'</p><div class="cc-bottom"><span>УРОК '+String(i+1).padStart(2,'0')+' / '+state.course.lessons.length+'</span><span class="cc-arrow">'+I('arrow-up-right')+'</span></div></button>').join('')||'<div class="empty">Уроки не найдены</div>';
 }
 function showAcademyHome(){
  state.lesson=null;$('academy-home').hidden=false;$('lesson-view').hidden=true;$('exam-view').hidden=true;
@@ -63,10 +64,10 @@ function renderLesson(){
  +'<h1>'+E(l.title)+'</h1><p class="lesson-lead">'+E(l.lead)+'</p>'
  +'<div class="lesson-metadata"><span>'+I('clock')+' '+E(l.reading)+' минут</span><span>'+I('book-open')+' АВТОРСКИЙ УРОК</span><span>'+(complete?I('circle-check')+' ПРОЙДЕНО':I('bookmark')+' В ПРОЦЕССЕ')+'</span></div>'
  +parts
- +'<section class="lesson-practice"><span>ЗАКРЕПЛЯЕМ НА ПРАКТИКЕ</span><h3>Ваша практика</h3><p>'+E(l.practice)+'</p></section>'
- +'<section class="lesson-summary"><span class="overline">ГЛАВНЫЕ МЫСЛИ</span><div class="summary-items">'+l.parts.map(p=>'<div>'+I('circle-check')+' '+E(p.heading)+'</div>').join('')+'</div></section>'
- +'<section class="lesson-test" id="lesson-test"><span class="overline">ПРОВЕРЬТЕ СЕБЯ</span><h3>'+E(l.quiz.question)+'</h3>'+options+(a!==undefined?'<div class="test-feedback '+(a===l.quiz.correct?'correct':'incorrect')+'"><b>'+(a===l.quiz.correct?'Верно! Урок отмечен как пройденный.':'Пока не совсем. Можно выбрать другой ответ.')+'</b><div>'+E(l.quiz.explanation)+'</div></div>':'')+'</section>'
- +'<div class="lesson-bottom"><button class="btn btn-outline" data-lesson="'+Math.max(0,idx-1)+'" '+(idx===0?'disabled':'')+'>← Предыдущий урок</button><button class="btn btn-dark" data-lesson="'+Math.min(state.course.lessons.length-1,idx+1)+'" '+(idx===state.course.lessons.length-1?'disabled':'')+'>Следующий урок ↗</button></div>';
+ +'<section class="lesson-practice"><span>'+I('flask-conical')+' ЗАКРЕПЛЯЕМ НА ПРАКТИКЕ</span><h3>Ваша практика</h3><p>'+E(l.practice)+'</p></section>'
+ +'<section class="lesson-summary"><span class="overline">'+I('lightbulb')+' ГЛАВНЫЕ МЫСЛИ</span><div class="summary-items">'+l.parts.map(p=>'<div>'+I('circle-check')+' '+E(p.heading)+'</div>').join('')+'</div></section>'
+ +'<section class="lesson-test" id="lesson-test"><span class="overline">'+I('list-checks')+' ПРОВЕРЬТЕ СЕБЯ</span><h3>'+E(l.quiz.question)+'</h3>'+options+(a!==undefined?'<div class="test-feedback '+(a===l.quiz.correct?'correct':'incorrect')+'"><b>'+(a===l.quiz.correct?'Верно! Урок отмечен как пройденный.':'Пока не совсем. Можно выбрать другой ответ.')+'</b><div>'+E(l.quiz.explanation)+'</div></div>':'')+'</section>'
+ +'<div class="lesson-bottom"><button class="btn btn-outline" data-lesson="'+Math.max(0,idx-1)+'" '+(idx===0?'disabled':'')+'>'+I('arrow-left')+' Предыдущий урок</button><button class="btn btn-dark" data-lesson="'+Math.min(state.course.lessons.length-1,idx+1)+'" '+(idx===state.course.lessons.length-1?'disabled':'')+'>Следующий урок '+I('arrow-up-right')+'</button></div>';
 }
 function selectAnswer(num){
  if(state.lesson===null)return;
@@ -107,11 +108,11 @@ function aromaModal(idx){
  ['База',V(r,'Базовые ноты')],
  ['Дополнительные ноты',V(r,'Ноты без деления')]
  ].filter(pair=>pair[1]);
- $('aroma-details').innerHTML='<button type="button" class="modal-close" data-close-modal aria-label="Закрыть">×</button><span class="overline">'+E(collectionName(r))+' / '+E(V(r,'Категория'))+'</span><h2>'+E(code)+'</h2><p class="meta-note">'+E(V(r,'Характер')||'Описание этого аромата пока уточняется.')+'</p>'
+ $('aroma-details').innerHTML='<button type="button" class="modal-close" data-close-modal aria-label="Закрыть">'+I('x')+'</button><span class="overline">'+E(collectionName(r))+' / '+E(V(r,'Категория'))+'</span><h2>'+E(code)+'</h2><p class="meta-note">'+E(V(r,'Характер')||'Описание этого аромата пока уточняется.')+'</p>'
  +(pyramid.length?'<div class="note-table">'+pyramid.map(([key,val])=>'<div class="note-row"><b>'+E(key)+'</b><div>'+E(val)+'</div></div>').join('')+'</div>':'<div class="modal-info">Пирамида нот пока не заполнена. Уточните характеристики перед рекомендацией.</div>')
  +'<div class="modal-info"><b>Формат и данные заказа</b><p>Объём: '+(vol?E(vol)+' мл':'уточнить')+'<br>Артикул флакона: '+escText(V(r,'Артикул флакона'))+'<br>Пробник: '+escText(V(r,'Объем пробника, мл'))+' мл / арт. '+escText(V(r,'Артикул пробника'))+'<br>Цена флакона на '+repoDate+': '+(price?nfmt(price)+' ₽':'не указана')+'</p></div>'
  +'<p class="meta-note">'+(known?'Описание аромата заполнено.':'Лимитированная позиция: подробные характеристики требуют уточнения.')+' Перед покупкой проверьте актуальную цену и наличие.</p>'
- +'<div class="modal-footer"><button type="button" data-copy="'+idx+'">Скопировать подборку ↗</button><button type="button" data-close-modal>Закрыть</button></div>';
+ +'<div class="modal-footer"><button type="button" data-copy="'+idx+'">Скопировать подборку '+I('arrow-up-right')+'</button><button type="button" data-close-modal>Закрыть</button></div>';
  $('aroma-modal').classList.add('open');$('aroma-modal').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';$('aroma-details').focus();
 }
 function closeModal(){$('aroma-modal').classList.remove('open');$('aroma-modal').setAttribute('aria-hidden','true');document.body.style.overflow='';}
@@ -148,7 +149,7 @@ function recommend(event){
  const container=$('match-results');
  if(!candidates.length){container.innerHTML='<span class="overline">ПОДБОРКА</span><h2>Точных совпадений нет</h2><p>Попробуйте изменить нежелательные ноты или направление. Мы не рекомендуем позиции без подтверждённых данных.</p>';return;}
  container.innerHTML='<div class="match-results-head"><span class="overline">02 / ВАША ПОДБОРКА</span><h2>Попробуйте <em>эти ароматы</em></h2><p>Подборка сформирована по совпадениям заявленных нот и характеров. Нажмите на аромат, чтобы увидеть его пирамиду и артикул.</p></div>'
- +candidates.map((x,i)=>'<button type="button" class="match-result" data-aroma="'+x.i+'"><span>'+String(i+1).padStart(2,'0')+'</span><div><h3>'+E(V(x.r,'Код аромата'))+'</h3><p>'+E(V(x.r,'Характер'))+'. Совпадения: '+E([...new Set(x.found)].slice(0,4).join(', '))+'.</p></div><i>↗</i></button>').join('')
+ +candidates.map((x,i)=>'<button type="button" class="match-result" data-aroma="'+x.i+'"><span>'+String(i+1).padStart(2,'0')+'</span><div><h3>'+E(V(x.r,'Код аромата'))+'</h3><p>'+E(V(x.r,'Характер'))+'. Совпадения: '+E([...new Set(x.found)].slice(0,4).join(', '))+'.</p></div><i>'+I('arrow-up-right')+'</i></button>').join('')
  +'<p class="meta-note" style="font-size:11px;color:#948276;margin-top:20px">Попробуйте 2–3 варианта на блоттерах перед выбором. Это не гарантия того, что аромат понравится.</p>';
 }
 const examIds=[0,1,2,3,4,5,6,8,9,10,11,12,13,14,15,17,21,25];
